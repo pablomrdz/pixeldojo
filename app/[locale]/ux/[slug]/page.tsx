@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
 import { getPrincipleBySlug, principleHref, principles } from "@/data/learning";
 import type { Locale } from "@/lib/types";
 
@@ -74,16 +75,11 @@ export default async function PrinciplePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <nav className="flex items-center justify-between gap-4">
-        <Link href={`/${locale}`} className="text-lg font-bold tracking-tight">
-          PixelDojo
-        </Link>
-        <LanguageSwitcher
-          locale={locale}
-          enSuffix={`/ux/${item.slug.en}`}
-          esSuffix={`/ux/${item.slug.es}`}
-        />
-      </nav>
+      <SiteHeader
+        locale={locale}
+        enSuffix={`/ux/${item.slug.en}`}
+        esSuffix={`/ux/${item.slug.es}`}
+      />
 
       <article className="mx-auto max-w-3xl py-16 md:py-24">
         <p className="text-xs font-semibold uppercase tracking-[0.15em] text-neutral-500">
@@ -170,6 +166,8 @@ export default async function PrinciplePage({
           </div>
         </section>
       </article>
+
+      <SiteFooter locale={locale} />
     </main>
   );
 }
