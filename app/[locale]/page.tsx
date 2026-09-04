@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { principleHref, principles } from "@/data/learning";
 import type { Locale } from "@/lib/types";
 
 const copy = {
@@ -13,6 +14,9 @@ const copy = {
     cta: "Start training",
     note: "No account required · 10-battle first session",
     enter: "Enter the Dojo →",
+    learnTitle: "Learn the principles behind the decisions.",
+    learnText: "Short explanations for when you want to go deeper — without slowing down the training loop.",
+    browse: "Browse all UX principles →",
   },
   es: {
     eyebrow: "Entrenamiento de criterio de diseño",
@@ -22,6 +26,9 @@ const copy = {
     cta: "Empezar entrenamiento",
     note: "Sin cuenta · Primera sesión de 10 retos",
     enter: "Entrar al Dojo →",
+    learnTitle: "Aprende los principios detrás de las decisiones.",
+    learnText: "Explicaciones breves para cuando quieras profundizar, sin frenar el ritmo del entrenamiento.",
+    browse: "Ver todos los principios UX →",
   },
 } satisfies Record<Locale, Record<string, string>>;
 
@@ -62,6 +69,9 @@ export default async function LocaleHome({
 
   const locale = rawLocale as Locale;
   const t = copy[locale];
+  const featured = principles.filter((item) =>
+    ["visual-hierarchy", "gestalt-proximity", "fitts-law", "hicks-law"].includes(item.key)
+  );
 
   return (
     <main className="shell py-8 md:py-12">
@@ -98,6 +108,38 @@ export default async function LocaleHome({
           </div>
           <p className="mt-4 text-sm text-neutral-500">{t.note}</p>
         </div>
+      </section>
+
+      <section className="border-t border-neutral-200 py-16 md:py-20">
+        <div className="max-w-2xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">
+            {locale === "es" ? "Biblioteca UX" : "UX library"}
+          </p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">{t.learnTitle}</h2>
+          <p className="mt-4 leading-7 text-neutral-600">{t.learnText}</p>
+        </div>
+
+        <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {featured.map((item) => (
+            <Link
+              key={item.key}
+              href={principleHref(item.key, locale)}
+              className="rounded-2xl border border-neutral-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-neutral-400"
+            >
+              <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                {item.eyebrow[locale]}
+              </p>
+              <h3 className="mt-2 font-semibold">{item.title[locale]}</h3>
+            </Link>
+          ))}
+        </div>
+
+        <Link
+          href={`/${locale}/ux`}
+          className="mt-7 inline-flex text-sm font-semibold underline decoration-neutral-300 underline-offset-4"
+        >
+          {t.browse}
+        </Link>
       </section>
     </main>
   );
