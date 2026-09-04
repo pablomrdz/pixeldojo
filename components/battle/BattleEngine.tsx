@@ -6,6 +6,7 @@ import { battles } from "@/data/battles";
 import { battlePrinciple, getPrinciple, principleHref } from "@/data/learning";
 import type { BattleAnswer, Difficulty, Locale } from "@/lib/types";
 import { ChallengeReveal } from "@/components/challenges/ChallengeReveal";
+import { SpotProblemBattle } from "@/components/challenges/SpotProblemBattle";
 import { AnimatedBar, BattleStage, FeedbackMotion, XPPop } from "@/components/battle/MotionPrimitives";
 import { track } from "@/lib/analytics";
 
@@ -218,6 +219,7 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
       answer: value,
       correct,
       xp_earned: earned,
+      mode: battle.mode ?? "compare",
     });
   };
 
@@ -281,40 +283,63 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
         )}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {(["a", "b"] as BattleAnswer[]).map((value) => {
-          const option = optionFor(value);
-          const selected = answer === value;
-          const correct = Boolean(answer) && value === displayedCorrectAnswer;
+      {battle.mode === "spot" && battle.spot ? (
+        <SpotProblemBattle
+          locale={locale}
+          prompt={battle.spot.prompt}
+          hotspots={battle.spot.hotspots}
+          resolved={Boolean(answer)}
+          onResolve={(correct, hotspotId) => {
+            if (answer) return;
+            track("battle_answered", {
+              locale,
+              battle_id: battle.id,
+              skill: battle.skill,
+              index: index + 1,
+              answer: hotspotId,
+              correct,
+              xp_earned: correct ? 100 : 20,
+              mode: "spot",
+            });
+            choose(correct ? displayedCorrectAnswer : opposite(displayedCorrectAnswer));
+          }}
+        />
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2">
+          {(["a", "b"] as BattleAnswer[]).map((value) => {
+            const option = optionFor(value);
+            const selected = answer === value;
+            const correct = Boolean(answer) && value === displayedCorrectAnswer;
 
-          return (
-            <button
-              key={value}
-              onClick={() => choose(value)}
-              aria-label={
-                locale === "es"
-                  ? `Elegir opción ${value.toUpperCase()}`
-                  : `Choose option ${value.toUpperCase()}`
-              }
-              className={`text-left rounded-3xl border p-3 transition ${
-                selected
-                  ? "border-neutral-950"
-                  : "border-neutral-200 hover:-translate-y-0.5 hover:border-neutral-400"
-              } ${correct ? "accent-ring" : ""}`}
-            >
-              <div className="mb-3 px-1">
-                <strong>{value.toUpperCase()}</strong>
-              </div>
-              <ChallengeReveal
-                variant={option.variant}
-                locale={locale}
-                revealed={Boolean(answer)}
-                isCorrectVariant={correct}
-              />
-            </button>
-          );
-        })}
-      </div>
+            return (
+              <button
+                key={value}
+                onClick={() => choose(value)}
+                aria-label={
+                  locale === "es"
+                    ? `Elegir opción ${value.toUpperCase()}`
+                    : `Choose option ${value.toUpperCase()}`
+                }
+                className={`text-left rounded-3xl border p-3 transition ${
+                  selected
+                    ? "border-neutral-950"
+                    : "border-neutral-200 hover:-translate-y-0.5 hover:border-neutral-400"
+                } ${correct ? "accent-ring" : ""}`}
+              >
+                <div className="mb-3 px-1">
+                  <strong>{value.toUpperCase()}</strong>
+                </div>
+                <ChallengeReveal
+                  variant={option.variant}
+                  locale={locale}
+                  revealed={Boolean(answer)}
+                  isCorrectVariant={correct}
+                />
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {answer && (
         <div className="fixed bottom-4 left-1/2 z-50 w-[min(820px,calc(100%-24px))] -translate-x-1/2">
