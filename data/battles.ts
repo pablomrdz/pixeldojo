@@ -114,17 +114,45 @@ export const battles: Battle[] = [
     slug: "form-error-handling",
     skill: "forms",
     difficulty: "intermediate",
+    mode: "spot",
     question: {
-      en: "Which error state helps the user recover faster?",
-      es: "¿Qué estado de error ayuda al usuario a recuperarse más rápido?",
+      en: "Spot the usability problem in this form.",
+      es: "Detecta el problema de usabilidad en este formulario.",
     },
-    optionA: { label: { en: "Option A", es: "Opción A" }, variant: "error-generic" },
-    optionB: { label: { en: "Option B", es: "Opción B" }, variant: "error-inline" },
-    correctAnswer: "b",
+    scenario: {
+      en: "A user entered an invalid email and is trying to understand what went wrong.",
+      es: "Un usuario escribió un email inválido e intenta entender qué salió mal.",
+    },
+    optionA: { label: { en: "Spot mode", es: "Modo detectar" }, variant: "error-inline" },
+    optionB: { label: { en: "Spot mode", es: "Modo detectar" }, variant: "error-inline" },
+    correctAnswer: "a",
     principle: { en: "Error recovery", es: "Recuperación de errores" },
     explanation: {
-      en: "The more useful error state explains what went wrong next to the affected field and tells the user how to fix it.",
-      es: "El estado de error más útil explica qué ocurrió junto al campo afectado e indica cómo corregirlo.",
+      en: "The real issue is the generic error message: it does not tell the user which field failed or how to recover.",
+      es: "El problema real es el mensaje genérico: no indica qué campo falló ni cómo puede recuperarse el usuario.",
+    },
+    spot: {
+      prompt: {
+        en: "Tap the area that makes recovery hardest.",
+        es: "Toca el área que dificulta más la recuperación.",
+      },
+      hotspots: [
+        {
+          id: "global-error",
+          label: { en: "Generic error message", es: "Mensaje de error genérico" },
+          isProblem: true,
+        },
+        {
+          id: "email-field",
+          label: { en: "Email field", es: "Campo de email" },
+          isProblem: false,
+        },
+        {
+          id: "submit-button",
+          label: { en: "Submit button", es: "Botón enviar" },
+          isProblem: false,
+        },
+      ],
     },
   },
   {
