@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { BrandHeroVisual } from "@/components/BrandHeroVisual";
 import { TrackedLink } from "@/components/TrackedLink";
+import { NewsletterInvite } from "@/components/NewsletterInvite";
 import { principleHref, principles } from "@/data/learning";
 import type { Locale } from "@/lib/types";
 
@@ -137,6 +138,10 @@ export default async function LocaleHome({
           {t.browse}
         </Link>
       </section>
+
+      <div className="pb-4">
+        <NewsletterInvite locale={locale} />
+      </div>
 
       <SiteFooter locale={locale} />
     </main>
