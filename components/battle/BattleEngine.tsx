@@ -187,14 +187,14 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
               </div>
             )}
             <Link
-              href={`/${locale}/support`}
+              href={`/${locale}/ux`}
               className="rounded-xl border border-neutral-200 bg-neutral-50 p-3.5 transition hover:border-neutral-400"
             >
               <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
-                {locale === "es" ? "¿Te sirvió?" : "Useful?"}
+                {locale === "es" ? "Seguir aprendiendo" : "Keep learning"}
               </p>
               <p className="mt-1 text-sm font-semibold">
-                {locale === "es" ? "Invita un café →" : "Buy a coffee →"}
+                {locale === "es" ? "Explorar principios →" : "Explore principles →"}
               </p>
             </Link>
           </aside>
