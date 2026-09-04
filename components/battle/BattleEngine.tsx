@@ -37,6 +37,11 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
   const [index, setIndex] = useState(0);
   const [answer, setAnswer] = useState<BattleAnswer | null>(null);
   const [attempts, setAttempts] = useState<Record<string, boolean>>({});
+  const [xp, setXp] = useState(0);
+  const [xpDelta, setXpDelta] = useState(0);
+  const [reasonOpen, setReasonOpen] = useState(false);
+  const [reasonAnswers, setReasonAnswers] = useState<Record<string, string>>({});
+  const [reasonBonus, setReasonBonus] = useState<Record<string, boolean>>({});
 
   const battle = battles[index];
   const done = index >= battles.length;
@@ -61,6 +66,7 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
   }, [attempts]);
 
   const score = Object.values(attempts).filter(Boolean).length;
+  const progress = Math.min(100, Math.round((index / battles.length) * 100));
 
   if (done || !battle) {
     const strongest = [...breakdown].sort(
@@ -79,7 +85,10 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
           <h1 className="mt-2 text-4xl font-semibold tracking-tight">
             {score} / {battles.length}
           </h1>
-          <p className="mt-3 text-neutral-600">
+          <div className="mt-4 inline-flex rounded-full bg-neutral-950 px-4 py-2 text-sm font-semibold text-white">
+            {xp} XP
+          </div>
+          <p className="mt-4 text-neutral-600">
             {locale === "es"
               ? "Ya tienes una primera lectura de tu criterio de diseño."
               : "You now have a first snapshot of your design judgment."}
@@ -145,6 +154,11 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
                 setIndex(0);
                 setAnswer(null);
                 setAttempts({});
+                setXp(0);
+                setXpDelta(0);
+                setReasonOpen(false);
+                setReasonAnswers({});
+                setReasonBonus({});
               }}
               className="w-full rounded-xl bg-neutral-950 px-5 py-3 font-semibold text-white"
             >
@@ -158,15 +172,35 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
 
   const choose = (value: BattleAnswer) => {
     if (answer) return;
+
+    const correct = value === displayedCorrectAnswer;
+    const earned = correct ? 100 : 20;
+
     setAnswer(value);
+    setXp((current) => current + earned);
+    setXpDelta(earned);
     setAttempts((current) => ({
       ...current,
-      [battle.id]: value === displayedCorrectAnswer,
+      [battle.id]: correct,
     }));
+  };
+
+  const chooseReason = (reasonId: string, isBestReason: boolean) => {
+    if (reasonAnswers[battle.id]) return;
+
+    setReasonAnswers((current) => ({ ...current, [battle.id]: reasonId }));
+
+    if (isBestReason) {
+      setReasonBonus((current) => ({ ...current, [battle.id]: true }));
+      setXp((current) => current + 25);
+      setXpDelta((current) => current + 25);
+    }
   };
 
   const next = () => {
     setAnswer(null);
+    setReasonOpen(false);
+    setXpDelta(0);
     setIndex((current) => current + 1);
   };
 
@@ -178,10 +212,21 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
   };
 
   return (
-    <section className={`space-y-5 ${answer ? "pb-44" : ""}`}>
-      <div className="flex items-center justify-between text-sm text-neutral-500">
-        <span>{index + 1} / {battles.length}</span>
-        <span>{difficultyLabel[locale][battle.difficulty]}</span>
+    <section className={`space-y-5 ${answer ? "pb-64 md:pb-52" : ""}`}>
+      <div className="space-y-3">
+        <div className="flex items-center justify-between text-sm text-neutral-500">
+          <span>{index + 1} / {battles.length}</span>
+          <div className="flex items-center gap-3">
+            <span className="font-semibold text-neutral-950">{xp} XP</span>
+            <span>{difficultyLabel[locale][battle.difficulty]}</span>
+          </div>
+        </div>
+        <div className="h-2 overflow-hidden rounded-full bg-neutral-200">
+          <div
+            className="h-full rounded-full bg-neutral-950 transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
       </div>
 
       <div>
@@ -227,30 +272,90 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
       </div>
 
       {answer && (
-        <div className="fixed bottom-4 left-1/2 z-50 w-[min(760px,calc(100%-24px))] -translate-x-1/2">
+        <div className="fixed bottom-4 left-1/2 z-50 w-[min(820px,calc(100%-24px))] -translate-x-1/2">
           <div className="card border-neutral-300 p-5 shadow-xl md:p-6">
-            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-              <div>
-                <p className="font-semibold">
-                  {isCorrect
-                    ? locale === "es"
-                      ? "✓ Buena elección"
-                      : "✓ Good call"
-                    : locale === "es"
-                      ? "No exactamente"
-                      : "Not quite"}
-                </p>
-                <h2 className="mt-2 text-lg font-semibold">{battle.principle[locale]}</h2>
-                <p className="mt-1 max-w-2xl text-sm leading-6 text-neutral-600 md:text-base">
-                  {battle.explanation[locale]}
-                </p>
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                <div>
+                  <div className="flex items-center gap-3">
+                    <p className="font-semibold">
+                      {isCorrect
+                        ? locale === "es"
+                          ? "✓ Buena elección"
+                          : "✓ Good call"
+                        : locale === "es"
+                          ? "No exactamente"
+                          : "Not quite"}
+                    </p>
+                    <span className="rounded-full bg-neutral-100 px-2.5 py-1 text-xs font-semibold">
+                      +{xpDelta} XP
+                    </span>
+                  </div>
+                  <h2 className="mt-2 text-lg font-semibold">{battle.principle[locale]}</h2>
+                  <p className="mt-1 max-w-2xl text-sm leading-6 text-neutral-600 md:text-base">
+                    {battle.explanation[locale]}
+                  </p>
+                </div>
+                <button
+                  onClick={next}
+                  className="shrink-0 rounded-xl bg-neutral-950 px-5 py-3 font-semibold text-white"
+                >
+                  {locale === "es" ? "Continuar →" : "Continue →"}
+                </button>
               </div>
-              <button
-                onClick={next}
-                className="shrink-0 rounded-xl bg-neutral-950 px-5 py-3 font-semibold text-white"
-              >
-                {locale === "es" ? "Continuar →" : "Continue →"}
-              </button>
+
+              {battle.reasonOptions && battle.reasonPrompt && (
+                <div className="border-t border-neutral-200 pt-4">
+                  {!reasonOpen ? (
+                    <button
+                      onClick={() => setReasonOpen(true)}
+                      className="text-sm font-semibold underline decoration-neutral-300 underline-offset-4"
+                    >
+                      {battle.reasonPrompt[locale]}
+                      <span className="ml-2 text-neutral-500">+25 XP</span>
+                    </button>
+                  ) : (
+                    <div>
+                      <p className="text-sm font-semibold">
+                        {locale === "es" ? "¿Cuál es la mejor razón?" : "What's the best reason?"}
+                      </p>
+                      <div className="mt-3 grid gap-2 md:grid-cols-3">
+                        {battle.reasonOptions.map((reason) => {
+                          const chosen = reasonAnswers[battle.id] === reason.id;
+                          const locked = Boolean(reasonAnswers[battle.id]);
+                          return (
+                            <button
+                              key={reason.id}
+                              onClick={() => chooseReason(reason.id, reason.isBestReason)}
+                              disabled={locked}
+                              className={`rounded-xl border px-3 py-3 text-left text-sm transition ${
+                                chosen
+                                  ? reason.isBestReason
+                                    ? "border-neutral-950 bg-neutral-950 text-white"
+                                    : "border-neutral-400 bg-neutral-100"
+                                  : "border-neutral-200 hover:border-neutral-400"
+                              }`}
+                            >
+                              {reason.label[locale]}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {reasonAnswers[battle.id] && (
+                        <p className="mt-3 text-sm text-neutral-600">
+                          {reasonBonus[battle.id]
+                            ? locale === "es"
+                              ? "✓ Exacto. Identificaste el principio detrás de la decisión. +25 XP"
+                              : "✓ Exactly. You identified the principle behind the decision. +25 XP"
+                            : locale === "es"
+                              ? "Buena hipótesis. La clave está en el principio señalado arriba."
+                              : "Good hypothesis. The key is the principle explained above."}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
