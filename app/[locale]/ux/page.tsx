@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
 import { principleHref, principles } from "@/data/learning";
 import type { Locale } from "@/lib/types";
 
@@ -20,6 +21,7 @@ export async function generateMetadata({
         ? "Aprende principios de UX y UI con explicaciones breves y práctica visual."
         : "Learn UX and UI principles through short explanations and visual practice.",
     alternates: {
+      canonical: `/${locale}/ux`,
       languages: { en: "/en/ux", es: "/es/ux" },
     },
   };
@@ -36,10 +38,7 @@ export default async function UXIndex({
 
   return (
     <main className="shell py-7 md:py-10">
-      <nav className="flex items-center justify-between">
-        <Link href={`/${locale}`} className="text-lg font-bold tracking-tight">PixelDojo</Link>
-        <LanguageSwitcher locale={locale} suffix="/ux" />
-      </nav>
+      <SiteHeader locale={locale} enSuffix="/ux" esSuffix="/ux" />
 
       <section className="py-16 md:py-24">
         <p className="text-sm font-semibold uppercase tracking-[0.14em] text-neutral-500">
@@ -72,6 +71,8 @@ export default async function UXIndex({
           ))}
         </div>
       </section>
+
+      <SiteFooter locale={locale} />
     </main>
   );
 }
