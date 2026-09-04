@@ -4,9 +4,13 @@ import type { Locale } from "@/lib/types";
 export function LanguageSwitcher({
   locale,
   suffix = "",
+  enSuffix,
+  esSuffix,
 }: {
   locale: Locale;
   suffix?: string;
+  enSuffix?: string;
+  esSuffix?: string;
 }) {
   return (
     <div
@@ -14,7 +18,7 @@ export function LanguageSwitcher({
       aria-label={locale === "es" ? "Selector de idioma" : "Language selector"}
     >
       <Link
-        href={`/en${suffix}`}
+        href={`/en${enSuffix ?? suffix}`}
         className={`rounded-full px-3 py-1.5 transition ${
           locale === "en" ? "bg-neutral-950 text-white" : "text-neutral-500 hover:text-neutral-950"
         }`}
@@ -22,7 +26,7 @@ export function LanguageSwitcher({
         EN
       </Link>
       <Link
-        href={`/es${suffix}`}
+        href={`/es${esSuffix ?? suffix}`}
         className={`rounded-full px-3 py-1.5 transition ${
           locale === "es" ? "bg-neutral-950 text-white" : "text-neutral-500 hover:text-neutral-950"
         }`}
