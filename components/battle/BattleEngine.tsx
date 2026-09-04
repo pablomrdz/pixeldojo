@@ -5,7 +5,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { battles } from "@/data/battles";
 import { battlePrinciple, getPrinciple, principleHref } from "@/data/learning";
 import type { BattleAnswer, Difficulty, Locale } from "@/lib/types";
-import { DemoInterface } from "@/components/challenges/DemoInterface";
+import { ChallengeReveal } from "@/components/challenges/ChallengeReveal";
+import { AnimatedBar, BattleStage, FeedbackMotion, XPPop } from "@/components/battle/MotionPrimitives";
 import { track } from "@/lib/analytics";
 
 const difficultyLabel: Record<Locale, Record<Difficulty, string>> = {
@@ -156,10 +157,7 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
                     <span className="text-xs text-neutral-500">{pct}%</span>
                   </div>
                   <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-neutral-200">
-                    <div
-                      className="h-full rounded-full bg-neutral-950"
-                      style={{ width: `${pct}%` }}
-                    />
+                    <AnimatedBar value={pct} />
                   </div>
                 </div>
               );
@@ -256,7 +254,8 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
   };
 
   return (
-    <section className={`space-y-5 ${answer ? "pb-64 md:pb-52" : ""}`}>
+    <BattleStage stageKey={battle.id}>
+      <section className={`space-y-5 ${answer ? "pb-64 md:pb-52" : ""}`}>
       <div className="space-y-3">
         <div className="flex items-center justify-between text-sm text-neutral-500">
           <span>{index + 1} / {battles.length}</span>
@@ -266,10 +265,7 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
           </div>
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-neutral-200">
-          <div
-            className="accent-progress h-full rounded-full transition-all duration-300"
-            style={{ width: `${progress}%` }}
-          />
+          <AnimatedBar value={progress} />
         </div>
       </div>
 
@@ -309,7 +305,12 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
               <div className="mb-3 px-1">
                 <strong>{value.toUpperCase()}</strong>
               </div>
-              <DemoInterface variant={option.variant} locale={locale} />
+              <ChallengeReveal
+                variant={option.variant}
+                locale={locale}
+                revealed={Boolean(answer)}
+                isCorrectVariant={correct}
+              />
             </button>
           );
         })}
@@ -317,6 +318,7 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
 
       {answer && (
         <div className="fixed bottom-4 left-1/2 z-50 w-[min(820px,calc(100%-24px))] -translate-x-1/2">
+          <FeedbackMotion>
           <div className="card border-neutral-300 p-5 shadow-xl md:p-6">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
@@ -327,9 +329,7 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
                         ? locale === "es" ? "✓ Buena elección" : "✓ Good call"
                         : locale === "es" ? "No exactamente" : "Not quite"}
                     </p>
-                    <span className="accent-chip rounded-full border px-2.5 py-1 text-xs font-semibold">
-                      +{xpDelta} XP
-                    </span>
+                    <XPPop>+{xpDelta} XP</XPPop>
                     {principle && (
                       <span className="rounded-full border border-neutral-300 px-2.5 py-1 text-xs font-medium text-neutral-600">
                         {principle.eyebrow[locale]} · {principle.title[locale]}
@@ -420,8 +420,10 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
               )}
             </div>
           </div>
+          </FeedbackMotion>
         </div>
       )}
-    </section>
+      </section>
+    </BattleStage>
   );
 }
