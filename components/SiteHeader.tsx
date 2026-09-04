@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { PixelDojoLogo } from "@/components/PixelDojoLogo";
 import type { Locale } from "@/lib/types";
 
 export function SiteHeader({
@@ -15,9 +16,7 @@ export function SiteHeader({
 }) {
   return (
     <header className={`flex items-center justify-between gap-4 ${compact ? "" : "py-1"}`}>
-      <Link href={`/${locale}`} className="text-lg font-bold tracking-tight">
-        PixelDojo
-      </Link>
+      <PixelDojoLogo locale={locale} />
       <div className="flex items-center gap-5">
         <nav className="hidden items-center gap-5 text-sm text-neutral-600 sm:flex" aria-label="Primary">
           <Link href={`/${locale}/play`} className="hover:text-neutral-950">
