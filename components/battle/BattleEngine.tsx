@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { battles } from "@/data/battles";
 import { battlePrinciple, getPrinciple, principleHref } from "@/data/learning";
 import type { BattleAnswer, Difficulty, Locale } from "@/lib/types";
 import { DemoInterface } from "@/components/challenges/DemoInterface";
+import { track } from "@/lib/analytics";
 
 const difficultyLabel: Record<Locale, Record<Difficulty, string>> = {
   en: { beginner: "Beginner", intermediate: "Intermediate", advanced: "Advanced" },
@@ -44,6 +45,8 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
   const [reasonOpen, setReasonOpen] = useState(false);
   const [reasonAnswers, setReasonAnswers] = useState<Record<string, string>>({});
   const [reasonBonus, setReasonBonus] = useState<Record<string, boolean>>({});
+  const startedRef = useRef(false);
+  const completedRef = useRef(false);
 
   const battle = battles[index];
   const done = index >= battles.length;
@@ -67,6 +70,35 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
 
   const score = Object.values(attempts).filter(Boolean).length;
   const progress = Math.min(100, Math.round((index / battles.length) * 100));
+
+  useEffect(() => {
+    if (!startedRef.current) {
+      startedRef.current = true;
+      track("training_started", { locale, battle_count: battles.length });
+    }
+  }, [locale]);
+
+  useEffect(() => {
+    if (!battle) return;
+    track("battle_viewed", {
+      locale,
+      battle_id: battle.id,
+      skill: battle.skill,
+      index: index + 1,
+      difficulty: battle.difficulty,
+    });
+  }, [battle, index, locale]);
+
+  useEffect(() => {
+    if (!done || completedRef.current) return;
+    completedRef.current = true;
+    track("training_completed", {
+      locale,
+      score,
+      total: battles.length,
+      xp,
+    });
+  }, [done, locale, score, xp]);
 
   if (done || !battle) {
     const strongest = [...breakdown].sort(
@@ -94,6 +126,8 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
           </div>
           <button
             onClick={() => {
+              track("train_again_clicked", { locale, score, xp });
+              completedRef.current = false;
               setIndex(0);
               setAnswer(null);
               setAttempts({});
@@ -167,11 +201,26 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
     setXp((current) => current + earned);
     setXpDelta(earned);
     setAttempts((current) => ({ ...current, [battle.id]: correct }));
+    track("battle_answered", {
+      locale,
+      battle_id: battle.id,
+      skill: battle.skill,
+      index: index + 1,
+      answer: value,
+      correct,
+      xp_earned: earned,
+    });
   };
 
   const chooseReason = (reasonId: string, isBestReason: boolean) => {
     if (reasonAnswers[battle.id]) return;
     setReasonAnswers((current) => ({ ...current, [battle.id]: reasonId }));
+    track("reason_answered", {
+      locale,
+      battle_id: battle.id,
+      reason_id: reasonId,
+      correct: isBestReason,
+    });
     if (isBestReason) {
       setReasonBonus((current) => ({ ...current, [battle.id]: true }));
       setXp((current) => current + 25);
@@ -207,7 +256,7 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-neutral-200">
           <div
-            className="h-full rounded-full bg-neutral-950 transition-all duration-300"
+            className="accent-progress h-full rounded-full transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -244,7 +293,7 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
                 selected
                   ? "border-neutral-950"
                   : "border-neutral-200 hover:-translate-y-0.5 hover:border-neutral-400"
-              } ${correct ? "ring-2 ring-neutral-950" : ""}`}
+              } ${correct ? "accent-ring" : ""}`}
             >
               <div className="mb-3 px-1">
                 <strong>{value.toUpperCase()}</strong>
@@ -267,7 +316,7 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
                         ? locale === "es" ? "✓ Buena elección" : "✓ Good call"
                         : locale === "es" ? "No exactamente" : "Not quite"}
                     </p>
-                    <span className="rounded-full bg-neutral-100 px-2.5 py-1 text-xs font-semibold">
+                    <span className="accent-chip rounded-full border px-2.5 py-1 text-xs font-semibold">
                       +{xpDelta} XP
                     </span>
                     {principle && (
@@ -282,6 +331,13 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
                   {principle && (
                     <Link
                       href={principleHref(principle.key, locale)}
+                      onClick={() =>
+                        track("principle_learn_more_clicked", {
+                          locale,
+                          battle_id: battle.id,
+                          principle: principle.key,
+                        })
+                      }
                       className="mt-2 inline-flex text-sm font-semibold underline decoration-neutral-300 underline-offset-4"
                     >
                       {locale === "es" ? "Aprender más →" : "Learn more →"}
@@ -300,7 +356,10 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
                 <div className="border-t border-neutral-200 pt-4">
                   {!reasonOpen ? (
                     <button
-                      onClick={() => setReasonOpen(true)}
+                      onClick={() => {
+                        setReasonOpen(true);
+                        track("reason_opened", { locale, battle_id: battle.id });
+                      }}
                       className="text-sm font-semibold underline decoration-neutral-300 underline-offset-4"
                     >
                       {battle.reasonPrompt[locale]}
