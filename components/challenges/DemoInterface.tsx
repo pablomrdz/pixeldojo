@@ -1,6 +1,11 @@
-type DemoInterfaceProps = { variant: string };
+import type { Locale } from "@/lib/types";
 
-export function DemoInterface({ variant }: DemoInterfaceProps) {
+type DemoInterfaceProps = {
+  variant: string;
+  locale?: Locale;
+};
+
+export function DemoInterface({ variant, locale = "en" }: DemoInterfaceProps) {
   const isBetter = [
     "cta-clear","pricing-structured","card-grouped","form-semantic","type-hierarchy",
     "dashboard-metric","error-inline","checkout-guest","contrast-readable","touch-comfortable"
@@ -17,8 +22,14 @@ export function DemoInterface({ variant }: DemoInterfaceProps) {
         </div>
       </div>
 
-      <div className={`mt-8 rounded-xl text-center font-semibold ${isBetter ? "border-2 border-neutral-900 px-5 py-4" : "border border-neutral-300 px-3 py-2 text-neutral-500"}`}>
-        {isBetter ? "Primary action" : "Action"}
+      <div
+        className={`mt-8 rounded-xl text-center font-semibold ${
+          isBetter
+            ? "border-2 border-neutral-900 px-5 py-4"
+            : "border border-neutral-300 px-3 py-2 text-neutral-500"
+        }`}
+      >
+        {locale === "es" ? "Continuar" : "Continue"}
       </div>
     </div>
   );
