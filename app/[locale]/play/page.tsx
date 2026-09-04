@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BattleEngine } from "@/components/battle/BattleEngine";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { SiteHeader } from "@/components/SiteHeader";
 import type { Locale } from "@/lib/types";
 
 export async function generateMetadata({
@@ -40,17 +39,9 @@ export default async function PlayPage({
 
   return (
     <main className="shell py-6 md:py-8">
-      <header className="mb-8 flex items-center justify-between gap-4 md:mb-10">
-        <Link href={`/${locale}`} className="font-bold tracking-tight">
-          PixelDojo
-        </Link>
-        <div className="flex items-center gap-4">
-          <span className="hidden text-sm text-neutral-500 md:inline">
-            {locale === "es" ? "Entrena tu criterio de diseño." : "Train your design judgment."}
-          </span>
-          <LanguageSwitcher locale={locale} suffix="/play" />
-        </div>
-      </header>
+      <div className="mb-8 md:mb-10">
+        <SiteHeader locale={locale} enSuffix="/play" esSuffix="/play" compact />
+      </div>
       <BattleEngine locale={locale} />
     </main>
   );
