@@ -9,6 +9,7 @@ import { ChallengeReveal } from "@/components/challenges/ChallengeReveal";
 import { SpotProblemBattle } from "@/components/challenges/SpotProblemBattle";
 import { AnimatedBar, BattleStage, FeedbackMotion, XPPop } from "@/components/battle/MotionPrimitives";
 import { track } from "@/lib/analytics";
+import { siteConfig } from "@/lib/site";
 
 const difficultyLabel: Record<Locale, Record<Difficulty, string>> = {
   en: { beginner: "Beginner", intermediate: "Intermediate", advanced: "Advanced" },
@@ -197,6 +198,19 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
                 {locale === "es" ? "Explorar principios →" : "Explore principles →"}
               </p>
             </Link>
+            <a
+              href={siteConfig.supportUrl || `/${locale}/support`}
+              target={siteConfig.supportUrl ? "_blank" : undefined}
+              rel={siteConfig.supportUrl ? "noreferrer" : undefined}
+              className="support-result-card rounded-xl border p-3.5 transition"
+            >
+              <p className="text-[11px] font-semibold uppercase tracking-wider">
+                {locale === "es" ? "Apoya el dojo" : "Support the dojo"}
+              </p>
+              <p className="mt-1 text-sm font-semibold">
+                {locale === "es" ? "Invita un café →" : "Buy a coffee →"}
+              </p>
+            </a>
           </aside>
         </div>
       </section>
