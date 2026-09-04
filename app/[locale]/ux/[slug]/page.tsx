@@ -80,7 +80,8 @@ export default async function PrinciplePage({
         </Link>
         <LanguageSwitcher
           locale={locale}
-          suffix={`/ux/${locale === "en" ? item.slug.en : item.slug.es}`}
+          enSuffix={`/ux/${item.slug.en}`}
+          esSuffix={`/ux/${item.slug.es}`}
         />
       </nav>
 
