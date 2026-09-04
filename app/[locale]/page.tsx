@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { BrandHeroVisual } from "@/components/BrandHeroVisual";
+import { TrackedLink } from "@/components/TrackedLink";
 import { principleHref, principles } from "@/data/learning";
 import type { Locale } from "@/lib/types";
 
@@ -76,54 +78,61 @@ export default async function LocaleHome({
     <main className="shell py-8 md:py-12">
       <SiteHeader locale={locale} />
 
-      <section className="flex min-h-[calc(100svh-120px)] items-center py-16 md:py-20">
+      <section className="grid min-h-[calc(100svh-120px)] items-center gap-12 py-14 lg:grid-cols-[1.02fr_.98fr] lg:py-20">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-neutral-500">
+          <p className="brand-eyebrow text-sm font-semibold uppercase tracking-[0.14em] text-neutral-500">
             {t.eyebrow}
           </p>
-          <h1 className="mt-5 max-w-4xl text-5xl font-semibold tracking-tight md:text-7xl">
+          <h1 className="mt-5 max-w-3xl text-5xl font-semibold tracking-[-0.055em] md:text-7xl">
             {t.title}
           </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-neutral-600">{t.description}</p>
+          <p className="mt-6 max-w-xl text-lg leading-8 text-neutral-600">{t.description}</p>
           <div className="mt-9">
-            <Link
+            <TrackedLink
               href={`/${locale}/play`}
-              className="inline-flex rounded-xl bg-neutral-950 px-6 py-3 font-semibold text-white"
+              eventName="home_cta_clicked"
+              eventPayload={{ locale }}
+              className="brand-cta inline-flex rounded-xl px-6 py-3 font-semibold"
             >
               {t.cta}
-            </Link>
+            </TrackedLink>
           </div>
-          <p className="mt-4 text-sm text-neutral-500">{t.note}</p>
+          <p className="mt-5 text-sm text-neutral-500">{t.note}</p>
         </div>
+
+        <BrandHeroVisual locale={locale} />
       </section>
 
-      <section className="border-t border-neutral-200 py-16 md:py-20">
+      <section className="border-t border-neutral-300 py-16 md:py-20">
         <div className="max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">
+          <p className="brand-eyebrow text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">
             {locale === "es" ? "Biblioteca UX" : "UX library"}
           </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">{t.learnTitle}</h2>
+          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] md:text-4xl">{t.learnTitle}</h2>
           <p className="mt-4 leading-7 text-neutral-600">{t.learnText}</p>
         </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {featured.map((item) => (
+          {featured.map((item, index) => (
             <Link
               key={item.key}
               href={principleHref(item.key, locale)}
-              className="rounded-2xl border border-neutral-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-neutral-400"
+              className="group rounded-2xl border border-neutral-300 bg-white p-5 transition hover:-translate-y-0.5 hover:border-neutral-500"
             >
-              <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
-                {item.eyebrow[locale]}
-              </p>
-              <h3 className="mt-2 font-semibold">{item.title[locale]}</h3>
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                  {item.eyebrow[locale]}
+                </p>
+                <span className={index === 0 ? "text-sm font-bold dojo-accent-text" : "text-sm text-neutral-300"}>0{index + 1}</span>
+              </div>
+              <h3 className="mt-3 font-semibold tracking-tight">{item.title[locale]}</h3>
             </Link>
           ))}
         </div>
 
         <Link
           href={`/${locale}/ux`}
-          className="mt-7 inline-flex text-sm font-semibold underline decoration-neutral-300 underline-offset-4"
+          className="mt-7 inline-flex text-sm font-semibold underline decoration-neutral-400 underline-offset-4"
         >
           {t.browse}
         </Link>
