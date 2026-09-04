@@ -56,7 +56,17 @@ const measures: Record<string, Measure[]> = {
   ],
 };
 
-function Measurement({ measure, index, reduceMotion }: { measure: Measure; index: number; reduceMotion: boolean | null }) {
+function Measurement({
+  measure,
+  index,
+  reduceMotion,
+  locale,
+}: {
+  measure: Measure;
+  index: number;
+  reduceMotion: boolean | null;
+  locale: Locale;
+}) {
   return (
     <motion.div
       className={`measurement ${measure.className} ${measure.orientation === "v" ? "measurement--v" : "measurement--h"}`}
@@ -65,7 +75,7 @@ function Measurement({ measure, index, reduceMotion }: { measure: Measure; index
       transition={{ delay: reduceMotion ? 0 : 0.08 + index * 0.1, duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
     >
       <span className="measurement__line" />
-      <span className="measurement__label">{measure.label}</span>
+      <span className="measurement__label">{measure.label[locale]}</span>
     </motion.div>
   );
 }
@@ -101,9 +111,10 @@ export function ChallengeReveal({ variant, locale, revealed, isCorrectVariant }:
             {currentMeasures.map((measure, index) => (
               <Measurement
                 key={measure.className}
-                measure={{ ...measure, label: { en: measure.label.en, es: measure.label.es } }}
+                measure={measure}
                 index={index}
                 reduceMotion={reduceMotion}
+                locale={locale}
               />
             ))}
             {currentMeasures.length === 0 && <div className="analysis-grid absolute inset-0 rounded-2xl" />}
