@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { battles } from "@/data/battles";
+import { battlePrinciple, getPrinciple, principleHref } from "@/data/learning";
 import type { BattleAnswer, Difficulty, Locale } from "@/lib/types";
 import { DemoInterface } from "@/components/challenges/DemoInterface";
 
@@ -55,13 +57,11 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
 
   const breakdown = useMemo(() => {
     const grouped: Record<string, { correct: number; total: number }> = {};
-
     battles.forEach((item) => {
       if (!grouped[item.skill]) grouped[item.skill] = { correct: 0, total: 0 };
       grouped[item.skill].total += 1;
       if (attempts[item.id]) grouped[item.skill].correct += 1;
     });
-
     return Object.entries(grouped);
   }, [attempts]);
 
@@ -78,92 +78,81 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
 
     return (
       <section className="card overflow-hidden">
-        <div className="border-b border-neutral-200 p-7 text-center md:p-10">
-          <p className="text-sm font-medium text-neutral-500">
-            {locale === "es" ? "Entrenamiento completado" : "Training complete"}
-          </p>
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight">
-            {score} / {battles.length}
-          </h1>
-          <div className="mt-4 inline-flex rounded-full bg-neutral-950 px-4 py-2 text-sm font-semibold text-white">
-            {xp} XP
-          </div>
-          <p className="mt-4 text-neutral-600">
-            {locale === "es"
-              ? "Ya tienes una primera lectura de tu criterio de diseño."
-              : "You now have a first snapshot of your design judgment."}
-          </p>
-        </div>
-
-        <div className="grid gap-8 p-7 md:grid-cols-[1fr_280px] md:p-10">
+        <div className="flex flex-col gap-4 border-b border-neutral-200 p-6 md:flex-row md:items-center md:justify-between md:px-8">
           <div>
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-neutral-500">
-              {locale === "es" ? "Por habilidad" : "By skill"}
-            </h2>
-            <div className="mt-4 divide-y divide-neutral-200">
-              {breakdown.map(([skill, result]) => {
-                const pct = Math.round((result.correct / result.total) * 100);
-                return (
-                  <div key={skill} className="grid grid-cols-[1fr_auto] gap-4 py-4">
-                    <div>
-                      <div className="flex items-center justify-between gap-4">
-                        <span className="font-medium">
-                          {skillLabel[locale][skill] ?? skill}
-                        </span>
-                        <span className="text-sm text-neutral-500">{pct}%</span>
-                      </div>
-                      <div className="mt-2 h-2 overflow-hidden rounded-full bg-neutral-200">
-                        <div
-                          className="h-full rounded-full bg-neutral-950"
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                    </div>
-                    <span className="self-center text-sm font-semibold">
-                      {result.correct}/{result.total}
-                    </span>
-                  </div>
-                );
-              })}
+            <p className="text-sm font-medium text-neutral-500">
+              {locale === "es" ? "Entrenamiento completado" : "Training complete"}
+            </p>
+            <div className="mt-1 flex items-center gap-3">
+              <h1 className="text-4xl font-semibold tracking-tight">
+                {score}/{battles.length}
+              </h1>
+              <span className="rounded-full bg-neutral-950 px-3 py-1.5 text-sm font-semibold text-white">
+                {xp} XP
+              </span>
             </div>
           </div>
+          <button
+            onClick={() => {
+              setIndex(0);
+              setAnswer(null);
+              setAttempts({});
+              setXp(0);
+              setXpDelta(0);
+              setReasonOpen(false);
+              setReasonAnswers({});
+              setReasonBonus({});
+            }}
+            className="rounded-xl bg-neutral-950 px-5 py-3 font-semibold text-white"
+          >
+            {locale === "es" ? "Entrenar de nuevo" : "Train again"}
+          </button>
+        </div>
 
-          <aside className="space-y-4">
+        <div className="grid gap-6 p-6 md:grid-cols-[1fr_240px] md:px-8 md:py-7">
+          <div className="grid gap-3 sm:grid-cols-2">
+            {breakdown.map(([skill, result]) => {
+              const pct = Math.round((result.correct / result.total) * 100);
+              return (
+                <div key={skill} className="rounded-xl border border-neutral-200 p-3.5">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-sm font-medium">
+                      {skillLabel[locale][skill] ?? skill}
+                    </span>
+                    <span className="text-xs text-neutral-500">{pct}%</span>
+                  </div>
+                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-neutral-200">
+                    <div
+                      className="h-full rounded-full bg-neutral-950"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <aside className="grid gap-3 sm:grid-cols-2 md:grid-cols-1">
             {strongest && (
-              <div className="rounded-2xl border border-neutral-200 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+              <div className="rounded-xl border border-neutral-200 p-3.5">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
                   {locale === "es" ? "Fortaleza" : "Strongest"}
                 </p>
-                <p className="mt-2 font-semibold">
+                <p className="mt-1 text-sm font-semibold">
                   {skillLabel[locale][strongest[0]] ?? strongest[0]}
                 </p>
               </div>
             )}
             {weakest && (
-              <div className="rounded-2xl border border-neutral-200 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
-                  {locale === "es" ? "Sigue practicando" : "Keep practicing"}
+              <div className="rounded-xl border border-neutral-200 p-3.5">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
+                  {locale === "es" ? "Practica después" : "Practice next"}
                 </p>
-                <p className="mt-2 font-semibold">
+                <p className="mt-1 text-sm font-semibold">
                   {skillLabel[locale][weakest[0]] ?? weakest[0]}
                 </p>
               </div>
             )}
-            <button
-              onClick={() => {
-                setIndex(0);
-                setAnswer(null);
-                setAttempts({});
-                setXp(0);
-                setXpDelta(0);
-                setReasonOpen(false);
-                setReasonAnswers({});
-                setReasonBonus({});
-              }}
-              className="w-full rounded-xl bg-neutral-950 px-5 py-3 font-semibold text-white"
-            >
-              {locale === "es" ? "Entrenar de nuevo" : "Train again"}
-            </button>
           </aside>
         </div>
       </section>
@@ -172,24 +161,17 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
 
   const choose = (value: BattleAnswer) => {
     if (answer) return;
-
     const correct = value === displayedCorrectAnswer;
     const earned = correct ? 100 : 20;
-
     setAnswer(value);
     setXp((current) => current + earned);
     setXpDelta(earned);
-    setAttempts((current) => ({
-      ...current,
-      [battle.id]: correct,
-    }));
+    setAttempts((current) => ({ ...current, [battle.id]: correct }));
   };
 
   const chooseReason = (reasonId: string, isBestReason: boolean) => {
     if (reasonAnswers[battle.id]) return;
-
     setReasonAnswers((current) => ({ ...current, [battle.id]: reasonId }));
-
     if (isBestReason) {
       setReasonBonus((current) => ({ ...current, [battle.id]: true }));
       setXp((current) => current + 25);
@@ -205,6 +187,8 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
   };
 
   const isCorrect = answer === displayedCorrectAnswer;
+  const principleKey = battlePrinciple[battle.id];
+  const principle = principleKey ? getPrinciple(principleKey) : undefined;
 
   const optionFor = (value: BattleAnswer) => {
     const original = shouldFlip ? opposite(value) : value;
@@ -277,24 +261,32 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center gap-2.5">
                     <p className="font-semibold">
                       {isCorrect
-                        ? locale === "es"
-                          ? "✓ Buena elección"
-                          : "✓ Good call"
-                        : locale === "es"
-                          ? "No exactamente"
-                          : "Not quite"}
+                        ? locale === "es" ? "✓ Buena elección" : "✓ Good call"
+                        : locale === "es" ? "No exactamente" : "Not quite"}
                     </p>
                     <span className="rounded-full bg-neutral-100 px-2.5 py-1 text-xs font-semibold">
                       +{xpDelta} XP
                     </span>
+                    {principle && (
+                      <span className="rounded-full border border-neutral-300 px-2.5 py-1 text-xs font-medium text-neutral-600">
+                        {principle.eyebrow[locale]} · {principle.title[locale]}
+                      </span>
+                    )}
                   </div>
-                  <h2 className="mt-2 text-lg font-semibold">{battle.principle[locale]}</h2>
-                  <p className="mt-1 max-w-2xl text-sm leading-6 text-neutral-600 md:text-base">
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-600 md:text-base">
                     {battle.explanation[locale]}
                   </p>
+                  {principle && (
+                    <Link
+                      href={principleHref(principle.key, locale)}
+                      className="mt-2 inline-flex text-sm font-semibold underline decoration-neutral-300 underline-offset-4"
+                    >
+                      {locale === "es" ? "Aprender más →" : "Learn more →"}
+                    </Link>
+                  )}
                 </div>
                 <button
                   onClick={next}
