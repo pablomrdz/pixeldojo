@@ -289,18 +289,8 @@ export function BattleEngine({ locale = "en" }: { locale?: Locale }) {
           prompt={battle.spot.prompt}
           hotspots={battle.spot.hotspots}
           resolved={Boolean(answer)}
-          onResolve={(correct, hotspotId) => {
+          onResolve={(correct) => {
             if (answer) return;
-            track("battle_answered", {
-              locale,
-              battle_id: battle.id,
-              skill: battle.skill,
-              index: index + 1,
-              answer: hotspotId,
-              correct,
-              xp_earned: correct ? 100 : 20,
-              mode: "spot",
-            });
             choose(correct ? displayedCorrectAnswer : opposite(displayedCorrectAnswer));
           }}
         />
