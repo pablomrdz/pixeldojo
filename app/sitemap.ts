@@ -11,6 +11,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/es/ux`, changeFrequency: "weekly", priority: 0.9 },
   ];
 
+  const trustPages = ["about", "contact", "support", "privacy", "terms"];
+  const trust: MetadataRoute.Sitemap = trustPages.flatMap((slug) => [
+    { url: `${base}/en/${slug}`, changeFrequency: "monthly", priority: slug === "about" ? 0.6 : 0.4 },
+    { url: `${base}/es/${slug}`, changeFrequency: "monthly", priority: slug === "about" ? 0.6 : 0.4 },
+  ]);
+
   const pages: MetadataRoute.Sitemap = principles.flatMap((item) => [
     {
       url: `${base}/en/ux/${item.slug.en}`,
@@ -24,5 +30,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ]);
 
-  return [...core, ...pages];
+  return [...core, ...trust, ...pages];
 }
