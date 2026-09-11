@@ -4,10 +4,21 @@ import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { getPrincipleBySlug, principleHref, principles } from "@/data/learning";
+import { getSeoPrincipleBySlug, seoPrinciples } from "@/data/seo-principles";
 import type { Locale } from "@/lib/types";
 
+const allPrinciples = [...principles, ...seoPrinciples];
+
+function getAnyPrincipleBySlug(locale: Locale, slug: string) {
+  return getPrincipleBySlug(locale, slug) ?? getSeoPrincipleBySlug(locale, slug);
+}
+
+function hrefFor(item: (typeof allPrinciples)[number], locale: Locale) {
+  return `/${locale}/ux/${item.slug[locale]}`;
+}
+
 export function generateStaticParams() {
-  return principles.flatMap((item) => [
+  return allPrinciples.flatMap((item) => [
     { locale: "en", slug: item.slug.en },
     { locale: "es", slug: item.slug.es },
   ]);
@@ -21,7 +32,7 @@ export async function generateMetadata({
   const { locale: rawLocale, slug } = await params;
   if (rawLocale !== "en" && rawLocale !== "es") return {};
   const locale = rawLocale as Locale;
-  const item = getPrincipleBySlug(locale, slug);
+  const item = getAnyPrincipleBySlug(locale, slug);
   if (!item) return {};
 
   return {
@@ -51,10 +62,10 @@ export default async function PrinciplePage({
   if (rawLocale !== "en" && rawLocale !== "es") notFound();
 
   const locale = rawLocale as Locale;
-  const item = getPrincipleBySlug(locale, slug);
+  const item = getAnyPrincipleBySlug(locale, slug);
   if (!item) notFound();
 
-  const related = principles.filter((p) => p.key !== item.key).slice(0, 3);
+  const related = allPrinciples.filter((p) => p.key !== item.key).slice(0, 3);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -82,17 +93,17 @@ export default async function PrinciplePage({
       />
 
       <article className="mx-auto max-w-3xl py-16 md:py-24">
-        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-neutral-500">
+        <p className="brand-eyebrow text-xs font-semibold uppercase tracking-[0.15em] text-neutral-500">
           {item.eyebrow[locale]}
         </p>
-        <h1 className="mt-4 text-4xl font-semibold tracking-tight md:text-6xl">
+        <h1 className="mt-4 text-4xl font-semibold tracking-[-0.045em] md:text-6xl">
           {item.title[locale]}
         </h1>
         <p className="mt-6 text-xl leading-8 text-neutral-600">
           {item.description[locale]}
         </p>
 
-        <div className="mt-10 rounded-3xl border border-neutral-200 bg-white p-6 md:p-8">
+        <div className="mt-10 rounded-3xl border border-neutral-300 bg-white p-6 md:p-8">
           <p className="text-sm font-semibold uppercase tracking-wider text-neutral-500">
             {locale === "es" ? "En una frase" : "In one sentence"}
           </p>
@@ -120,7 +131,7 @@ export default async function PrinciplePage({
           <ul className="mt-4 space-y-3">
             {item.takeaways[locale].map((takeaway) => (
               <li key={takeaway} className="flex gap-3 text-lg leading-7 text-neutral-700">
-                <span aria-hidden="true">→</span>
+                <span aria-hidden="true" className="dojo-accent-text">→</span>
                 <span>{takeaway}</span>
               </li>
             ))}
@@ -149,7 +160,7 @@ export default async function PrinciplePage({
           </Link>
         </section>
 
-        <section className="mt-14 border-t border-neutral-200 pt-10">
+        <section className="mt-14 border-t border-neutral-300 pt-10">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-neutral-500">
             {locale === "es" ? "Principios relacionados" : "Related principles"}
           </h2>
@@ -157,8 +168,8 @@ export default async function PrinciplePage({
             {related.map((relatedItem) => (
               <Link
                 key={relatedItem.key}
-                href={principleHref(relatedItem.key, locale)}
-                className="rounded-2xl border border-neutral-200 p-4 transition hover:-translate-y-0.5 hover:border-neutral-400"
+                href={hrefFor(relatedItem, locale)}
+                className="rounded-2xl border border-neutral-300 bg-white p-4 transition hover:-translate-y-0.5 hover:border-neutral-500"
               >
                 <span className="text-sm font-semibold">{relatedItem.title[locale]}</span>
               </Link>
