@@ -244,21 +244,49 @@ export const battles: Battle[] = [
     ],
   },
   {
-    id: "accessibility-touch-010",
-    slug: "accessibility-touch-target",
-    skill: "accessibility",
+    id: "decision-hick-010",
+    slug: "hicks-law-choice-overload",
+    skill: "decision-making",
     difficulty: "beginner",
     question: {
-      en: "Which mobile control is easier to activate reliably?",
-      es: "¿Qué control móvil es más fácil de activar con precisión?",
+      en: "Which menu helps the user decide faster?",
+      es: "¿Qué menú ayuda al usuario a decidir más rápido?",
     },
-    optionA: { label: { en: "Option A", es: "Opción A" }, variant: "touch-small" },
-    optionB: { label: { en: "Option B", es: "Opción B" }, variant: "touch-comfortable" },
+    scenario: {
+      en: "A new user wants to choose what to do next without studying every possible destination.",
+      es: "Un usuario nuevo quiere decidir qué hacer después sin estudiar todos los destinos posibles.",
+    },
+    optionA: { label: { en: "Option A", es: "Opción A" }, variant: "choice-overload" },
+    optionB: { label: { en: "Option B", es: "Opción B" }, variant: "choice-focused" },
     correctAnswer: "b",
-    principle: { en: "Touch target size", es: "Tamaño del área táctil" },
+    principle: { en: "Hick's Law", es: "Ley de Hick" },
     explanation: {
-      en: "The easier control provides a larger interactive target, reducing accidental misses.",
-      es: "El control más fácil ofrece un área interactiva mayor y reduce la probabilidad de toques fallidos.",
+      en: "The focused version reduces competing choices and groups secondary destinations, lowering decision effort without hiding important paths.",
+      es: "La versión enfocada reduce opciones competidoras y agrupa destinos secundarios, disminuyendo el esfuerzo de decisión sin ocultar rutas importantes.",
     },
+    reasonPrompt: {
+      en: "Want to explain why?",
+      es: "¿Quieres explicar por qué?",
+    },
+    reasonOptions: [
+      {
+        id: "colors",
+        label: { en: "It uses fewer colors", es: "Usa menos colores" },
+        isBestReason: false,
+      },
+      {
+        id: "choices",
+        label: {
+          en: "It reduces competing choices and groups less common actions",
+          es: "Reduce opciones competidoras y agrupa acciones menos frecuentes",
+        },
+        isBestReason: true,
+      },
+      {
+        id: "modern",
+        label: { en: "It looks more modern", es: "Se ve más moderno" },
+        isBestReason: false,
+      },
+    ],
   },
 ];
