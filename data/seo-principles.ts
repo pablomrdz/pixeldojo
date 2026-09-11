@@ -2,8 +2,9 @@ import type { PrinciplePage } from "@/data/learning";
 import type { Locale } from "@/lib/types";
 
 export type SeoPrincipleKey = "millers-law" | "jakobs-law";
+export type SeoPrinciplePage = Omit<PrinciplePage, "key"> & { key: SeoPrincipleKey };
 
-export const seoPrinciples: Array<PrinciplePage & { key: SeoPrincipleKey }> = [
+export const seoPrinciples: SeoPrinciplePage[] = [
   {
     key: "millers-law",
     slug: { en: "millers-law", es: "ley-de-miller" },
