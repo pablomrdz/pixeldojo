@@ -1,8 +1,7 @@
-import { battles as coreBattles } from "@/data/battles";
-import { extraBattles } from "@/data/extra-battles";
+import { battlePool } from "@/data/battles";
 import type { Battle } from "@/lib/types";
 
-export const battlePool: Battle[] = [...coreBattles, ...extraBattles];
+export { battlePool };
 
 export const spotBattles = battlePool.filter((battle) => battle.mode === "spot");
 export const compareBattles = battlePool.filter((battle) => battle.mode !== "spot");
