@@ -1,6 +1,7 @@
+import { extraBattles } from "@/data/extra-battles";
 import type { Battle } from "@/lib/types";
 
-export const battles: Battle[] = [
+export const coreBattles: Battle[] = [
   {
     id: "hierarchy-cta-001",
     slug: "visual-hierarchy-cta",
@@ -132,26 +133,15 @@ export const battles: Battle[] = [
       es: "El problema real es el mensaje genérico: no indica qué campo falló ni cómo puede recuperarse el usuario.",
     },
     spot: {
+      scene: "form-error",
       prompt: {
         en: "Tap the area that makes recovery hardest.",
         es: "Toca el área que dificulta más la recuperación.",
       },
       hotspots: [
-        {
-          id: "global-error",
-          label: { en: "Generic error message", es: "Mensaje de error genérico" },
-          isProblem: true,
-        },
-        {
-          id: "email-field",
-          label: { en: "Email field", es: "Campo de email" },
-          isProblem: false,
-        },
-        {
-          id: "submit-button",
-          label: { en: "Submit button", es: "Botón enviar" },
-          isProblem: false,
-        },
+        { id: "global-error", label: { en: "Generic error message", es: "Mensaje de error genérico" }, isProblem: true },
+        { id: "email-field", label: { en: "Email field", es: "Campo de email" }, isProblem: false },
+        { id: "submit-button", label: { en: "Submit button", es: "Botón enviar" }, isProblem: false },
       ],
     },
   },
@@ -176,29 +166,11 @@ export const battles: Battle[] = [
       en: "The lower-friction checkout lets the customer complete the immediate goal without forcing an unrelated commitment first.",
       es: "El checkout con menos fricción permite completar el objetivo inmediato sin forzar antes un compromiso innecesario.",
     },
-    reasonPrompt: {
-      en: "Want to explain why?",
-      es: "¿Quieres explicar por qué?",
-    },
+    reasonPrompt: { en: "Want to explain why?", es: "¿Quieres explicar por qué?" },
     reasonOptions: [
-      {
-        id: "shorter",
-        label: { en: "It simply looks shorter", es: "Simplemente se ve más corto" },
-        isBestReason: false,
-      },
-      {
-        id: "friction",
-        label: {
-          en: "It removes an unnecessary prerequisite from the purchase flow",
-          es: "Elimina un requisito innecesario del flujo de compra",
-        },
-        isBestReason: true,
-      },
-      {
-        id: "modern",
-        label: { en: "It feels more modern", es: "Se siente más moderno" },
-        isBestReason: false,
-      },
+      { id: "shorter", label: { en: "It simply looks shorter", es: "Simplemente se ve más corto" }, isBestReason: false },
+      { id: "friction", label: { en: "It removes an unnecessary prerequisite from the purchase flow", es: "Elimina un requisito innecesario del flujo de compra" }, isBestReason: true },
+      { id: "modern", label: { en: "It feels more modern", es: "Se siente más moderno" }, isBestReason: false },
     ],
   },
   {
@@ -218,29 +190,11 @@ export const battles: Battle[] = [
       en: "The more readable version creates stronger separation between text and background.",
       es: "La versión más legible crea una separación más fuerte entre texto y fondo.",
     },
-    reasonPrompt: {
-      en: "Want to explain why?",
-      es: "¿Quieres explicar por qué?",
-    },
+    reasonPrompt: { en: "Want to explain why?", es: "¿Quieres explicar por qué?" },
     reasonOptions: [
-      {
-        id: "larger",
-        label: { en: "The text is larger", es: "El texto es más grande" },
-        isBestReason: false,
-      },
-      {
-        id: "contrast",
-        label: {
-          en: "Foreground and background have stronger visual separation",
-          es: "Texto y fondo tienen una separación visual más fuerte",
-        },
-        isBestReason: true,
-      },
-      {
-        id: "minimal",
-        label: { en: "The layout is more minimal", es: "El layout es más minimalista" },
-        isBestReason: false,
-      },
+      { id: "larger", label: { en: "The text is larger", es: "El texto es más grande" }, isBestReason: false },
+      { id: "contrast", label: { en: "Foreground and background have stronger visual separation", es: "Texto y fondo tienen una separación visual más fuerte" }, isBestReason: true },
+      { id: "minimal", label: { en: "The layout is more minimal", es: "El layout es más minimalista" }, isBestReason: false },
     ],
   },
   {
@@ -264,29 +218,30 @@ export const battles: Battle[] = [
       en: "The focused version reduces competing choices and groups secondary destinations, lowering decision effort without hiding important paths.",
       es: "La versión enfocada reduce opciones competidoras y agrupa destinos secundarios, disminuyendo el esfuerzo de decisión sin ocultar rutas importantes.",
     },
-    reasonPrompt: {
-      en: "Want to explain why?",
-      es: "¿Quieres explicar por qué?",
-    },
+    reasonPrompt: { en: "Want to explain why?", es: "¿Quieres explicar por qué?" },
     reasonOptions: [
-      {
-        id: "colors",
-        label: { en: "It uses fewer colors", es: "Usa menos colores" },
-        isBestReason: false,
-      },
-      {
-        id: "choices",
-        label: {
-          en: "It reduces competing choices and groups less common actions",
-          es: "Reduce opciones competidoras y agrupa acciones menos frecuentes",
-        },
-        isBestReason: true,
-      },
-      {
-        id: "modern",
-        label: { en: "It looks more modern", es: "Se ve más moderno" },
-        isBestReason: false,
-      },
+      { id: "colors", label: { en: "It uses fewer colors", es: "Usa menos colores" }, isBestReason: false },
+      { id: "choices", label: { en: "It reduces competing choices and groups less common actions", es: "Reduce opciones competidoras y agrupa acciones menos frecuentes" }, isBestReason: true },
+      { id: "modern", label: { en: "It looks more modern", es: "Se ve más moderno" }, isBestReason: false },
     ],
   },
 ];
+
+export const battlePool: Battle[] = [...coreBattles, ...extraBattles];
+
+const firstSessionIds = [
+  "hierarchy-cta-001",
+  "spacing-card-003",
+  "typography-content-005",
+  "checkout-friction-008",
+  "accessibility-contrast-009",
+  "decision-hick-010",
+  "forms-errors-007",
+  "checkout-cost-011",
+  "touch-target-012",
+  "hierarchy-competing-013",
+];
+
+export const battles: Battle[] = firstSessionIds
+  .map((id) => battlePool.find((battle) => battle.id === id))
+  .filter((battle): battle is Battle => Boolean(battle));
