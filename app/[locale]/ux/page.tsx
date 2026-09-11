@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { principleHref, principles } from "@/data/learning";
+import { principles } from "@/data/learning";
 import { seoPrinciples } from "@/data/seo-principles";
 import type { Locale } from "@/lib/types";
 
@@ -21,8 +21,8 @@ export async function generateMetadata({
     title: locale === "es" ? "Principios UX y UI — PixelDojo" : "UX & UI principles — PixelDojo",
     description:
       locale === "es"
-        ? "Aprende principios de UX y UI con explicaciones breves, ejemplos visuales y práctica interactiva."
-        : "Learn UX and UI principles through short explanations, visual examples and interactive practice.",
+        ? "Aprende principios de UX y UI con explicaciones breves, ejemplos visuales, herramientas y práctica interactiva."
+        : "Learn UX and UI principles through short explanations, visual examples, tools and interactive practice.",
     alternates: {
       canonical: `/${locale}/ux`,
       languages: { en: "/en/ux", es: "/es/ux" },
@@ -30,16 +30,24 @@ export async function generateMetadata({
   };
 }
 
-export default async function UXIndex({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default async function UXIndex({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: rawLocale } = await params;
   if (rawLocale !== "en" && rawLocale !== "es") notFound();
   const locale = rawLocale as Locale;
 
-  const featured = allPrinciples.slice(0, 8);
+  const featuredKeys = [
+    "visual-hierarchy",
+    "gestalt-proximity",
+    "typographic-hierarchy",
+    "hicks-law",
+    "fitts-law",
+    "millers-law",
+    "jakobs-law",
+    "contrast-accessibility",
+  ];
+  const featured = featuredKeys
+    .map((key) => allPrinciples.find((item) => item.key === key))
+    .filter((item): item is (typeof allPrinciples)[number] => Boolean(item));
 
   return (
     <main className="shell py-7 md:py-10">
@@ -50,9 +58,7 @@ export default async function UXIndex({
           {locale === "es" ? "Biblioteca de principios" : "Principle library"}
         </p>
         <h1 className="mt-4 max-w-4xl text-4xl font-semibold tracking-[-0.05em] md:text-6xl">
-          {locale === "es"
-            ? "Entiende las reglas. Entrena el criterio."
-            : "Understand the rules. Train the judgment."}
+          {locale === "es" ? "Entiende las reglas. Entrena el criterio." : "Understand the rules. Train the judgment."}
         </h1>
         <p className="mt-5 max-w-2xl text-lg leading-8 text-neutral-600">
           {locale === "es"
@@ -61,16 +67,9 @@ export default async function UXIndex({
         </p>
 
         <div className="mt-10 grid gap-4 md:grid-cols-2">
-          <Link
-            href={`/${locale}/ux/laws`}
-            className="group rounded-3xl border border-neutral-300 bg-neutral-950 p-7 text-white transition hover:-translate-y-0.5"
-          >
-            <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
-              {locale === "es" ? "Cluster" : "Cluster"}
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight">
-              {locale === "es" ? "Leyes de UX" : "UX Laws"}
-            </h2>
+          <Link href={`/${locale}/ux/laws`} className="group rounded-3xl border border-neutral-300 bg-neutral-950 p-7 text-white transition hover:-translate-y-0.5">
+            <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Cluster</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight">{locale === "es" ? "Leyes de UX" : "UX Laws"}</h2>
             <p className="mt-3 max-w-md leading-7 text-neutral-300">
               {locale === "es"
                 ? "Fitts, Hick, Miller, Jakob y los modelos que ayudan a razonar sobre interacción y decisiones."
@@ -81,20 +80,13 @@ export default async function UXIndex({
             </span>
           </Link>
 
-          <Link
-            href={`/${locale}/ux/gestalt`}
-            className="group rounded-3xl border border-neutral-300 bg-white p-7 transition hover:-translate-y-0.5 hover:border-neutral-500"
-          >
-            <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
-              {locale === "es" ? "Percepción visual" : "Visual perception"}
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight">
-              {locale === "es" ? "Leyes Gestalt" : "Gestalt principles"}
-            </h2>
+          <Link href={`/${locale}/ux/gestalt`} className="group rounded-3xl border border-neutral-300 bg-white p-7 transition hover:-translate-y-0.5 hover:border-neutral-500">
+            <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">{locale === "es" ? "Percepción visual" : "Visual perception"}</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight">{locale === "es" ? "Leyes Gestalt" : "Gestalt principles"}</h2>
             <p className="mt-3 max-w-md leading-7 text-neutral-600">
               {locale === "es"
-                ? "Proximidad, similitud, región común y otros principios que explican cómo agrupamos información visual."
-                : "Proximity, similarity, common region and other principles that explain visual grouping."}
+                ? "Proximidad, similitud, región común y cierre: cómo agrupamos información visual."
+                : "Proximity, similarity, common region and closure: how we group visual information."}
             </p>
             <span className="mt-6 inline-flex text-sm font-semibold underline decoration-neutral-300 underline-offset-4">
               {locale === "es" ? "Explorar Gestalt →" : "Explore Gestalt →"}
@@ -102,15 +94,33 @@ export default async function UXIndex({
           </Link>
         </div>
 
-        <div className="mt-14 flex items-end justify-between gap-4">
+        <Link
+          href={`/${locale}/tools/color-contrast-checker`}
+          className="mt-4 grid gap-5 rounded-3xl border border-neutral-300 bg-[var(--accent-soft)] p-6 transition hover:-translate-y-0.5 hover:border-[var(--accent)] md:grid-cols-[1fr_auto] md:items-center md:p-7"
+        >
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
-              {locale === "es" ? "Principios individuales" : "Individual principles"}
+            <p className="text-xs font-semibold uppercase tracking-wider dojo-accent-text">
+              {locale === "es" ? "Herramienta gratuita" : "Free tool"}
             </p>
-            <h2 className="mt-2 text-3xl font-semibold tracking-tight">
-              {locale === "es" ? "Aprende uno. Practícalo después." : "Learn one. Practice it next."}
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight">
+              {locale === "es" ? "Comprobador de contraste de color" : "Color Contrast Checker"}
             </h2>
+            <p className="mt-2 max-w-2xl leading-7 text-neutral-600">
+              {locale === "es"
+                ? "Prueba combinaciones de texto y fondo, obtén el ratio y revisa AA/AAA sin salir de PixelDojo."
+                : "Test foreground and background colors, get the ratio, and review AA/AAA without leaving PixelDojo."}
+            </p>
           </div>
+          <span className="font-semibold">{locale === "es" ? "Abrir herramienta →" : "Open tool →"}</span>
+        </Link>
+
+        <div className="mt-14">
+          <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+            {locale === "es" ? "Principios prioritarios" : "Priority principles"}
+          </p>
+          <h2 className="mt-2 text-3xl font-semibold tracking-tight">
+            {locale === "es" ? "Aprende uno. Practícalo después." : "Learn one. Practice it next."}
+          </h2>
         </div>
 
         <div className="mt-7 grid gap-4 md:grid-cols-2">
@@ -120,9 +130,7 @@ export default async function UXIndex({
               href={`/${locale}/ux/${item.slug[locale]}`}
               className="rounded-3xl border border-neutral-300 bg-white p-6 transition hover:-translate-y-0.5 hover:border-neutral-500"
             >
-              <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
-                {item.eyebrow[locale]}
-              </p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">{item.eyebrow[locale]}</p>
               <h3 className="mt-2 text-xl font-semibold">{item.title[locale]}</h3>
               <p className="mt-2 leading-6 text-neutral-600">{item.short[locale]}</p>
             </Link>
@@ -133,13 +141,10 @@ export default async function UXIndex({
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">PixelDojo</p>
             <h2 className="mt-2 text-2xl font-semibold">
-              {locale === "es" ? "¿Ya entendiste el principio? Ahora detectalo en una interfaz." : "Understand the principle? Now spot it in an interface."}
+              {locale === "es" ? "¿Ya entendiste el principio? Ahora detéctalo en una interfaz." : "Understand the principle? Now spot it in an interface."}
             </h2>
           </div>
-          <Link
-            href={`/${locale}/play`}
-            className="brand-cta mt-5 inline-flex shrink-0 rounded-xl px-5 py-3 font-semibold md:mt-0"
-          >
+          <Link href={`/${locale}/play`} className="brand-cta mt-5 inline-flex shrink-0 rounded-xl px-5 py-3 font-semibold md:mt-0">
             {locale === "es" ? "Entrenar" : "Train"}
           </Link>
         </div>
