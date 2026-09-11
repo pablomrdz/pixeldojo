@@ -4,24 +4,8 @@ import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { getPrinciple, principleHref } from "@/data/learning";
+import { seoPrinciples } from "@/data/seo-principles";
 import type { Locale } from "@/lib/types";
-
-const gestaltItems = {
-  en: [
-    ["Proximity", "Elements placed near each other are perceived as related."],
-    ["Similarity", "Elements that look alike are often interpreted as belonging to the same group."],
-    ["Common region", "A shared boundary can create grouping even when elements are separated."],
-    ["Closure", "People tend to perceive complete forms even when visual information is incomplete."],
-    ["Continuity", "The eye prefers smooth, continuous paths over abrupt visual breaks."],
-  ],
-  es: [
-    ["Proximidad", "Los elementos cercanos tienden a percibirse como relacionados."],
-    ["Similitud", "Los elementos visualmente parecidos suelen interpretarse como parte del mismo grupo."],
-    ["Región común", "Un límite compartido puede crear agrupación aunque los elementos estén separados."],
-    ["Cierre", "Las personas tienden a percibir formas completas incluso cuando falta información visual."],
-    ["Continuidad", "El ojo prefiere recorridos suaves y continuos frente a rupturas visuales abruptas."],
-  ],
-} as const;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale: rawLocale } = await params;
@@ -30,8 +14,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     title: locale === "es" ? "Leyes Gestalt en diseño UX/UI — PixelDojo" : "Gestalt principles in UX/UI design — PixelDojo",
     description:
       locale === "es"
-        ? "Aprende las leyes Gestalt aplicadas a UX y UI: proximidad, similitud, región común, cierre y continuidad."
-        : "Learn Gestalt principles applied to UX and UI: proximity, similarity, common region, closure and continuity.",
+        ? "Aprende las leyes Gestalt aplicadas a UX y UI: proximidad, similitud, región común y cierre con ejemplos visuales."
+        : "Learn Gestalt principles applied to UX and UI: proximity, similarity, common region and closure with visual examples.",
     alternates: {
       canonical: `/${locale}/ux/gestalt`,
       languages: { en: "/en/ux/gestalt", es: "/es/ux/gestalt" },
@@ -44,6 +28,16 @@ export default async function GestaltHub({ params }: { params: Promise<{ locale:
   if (rawLocale !== "en" && rawLocale !== "es") notFound();
   const locale = rawLocale as Locale;
   const proximity = getPrinciple("gestalt-proximity")!;
+  const similarity = seoPrinciples.find((item) => item.key === "gestalt-similarity")!;
+  const commonRegion = seoPrinciples.find((item) => item.key === "gestalt-common-region")!;
+  const closure = seoPrinciples.find((item) => item.key === "gestalt-closure")!;
+
+  const items = [
+    { page: proximity, href: principleHref("gestalt-proximity", locale), number: "01" },
+    { page: similarity, href: `/${locale}/ux/${similarity.slug[locale]}`, number: "02" },
+    { page: commonRegion, href: `/${locale}/ux/${commonRegion.slug[locale]}`, number: "03" },
+    { page: closure, href: `/${locale}/ux/${closure.slug[locale]}`, number: "04" },
+  ];
 
   return (
     <main className="shell py-8 md:py-10">
@@ -66,7 +60,7 @@ export default async function GestaltHub({ params }: { params: Promise<{ locale:
           <div className="grid gap-8 md:grid-cols-[1fr_1.15fr] md:items-center">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
-                {locale === "es" ? "Ejemplo interactivo" : "Interactive example"}
+                {locale === "es" ? "Ejemplo visual" : "Visual example"}
               </p>
               <h2 className="mt-3 text-3xl font-semibold tracking-tight">
                 {locale === "es" ? "Proximidad convierte espacio en significado." : "Proximity turns spacing into meaning."}
@@ -76,7 +70,7 @@ export default async function GestaltHub({ params }: { params: Promise<{ locale:
                 href={principleHref("gestalt-proximity", locale)}
                 className="mt-5 inline-flex text-sm font-semibold underline decoration-neutral-300 underline-offset-4"
               >
-                {locale === "es" ? "Explorar la ley de proximidad →" : "Explore proximity →"}
+                {locale === "es" ? "Explorar proximidad →" : "Explore proximity →"}
               </Link>
             </div>
 
@@ -105,17 +99,30 @@ export default async function GestaltHub({ params }: { params: Promise<{ locale:
 
         <section className="mt-16">
           <h2 className="text-3xl font-semibold tracking-tight">
-            {locale === "es" ? "Principios Gestalt principales" : "Core Gestalt principles"}
+            {locale === "es" ? "Principios Gestalt para estudiar" : "Gestalt principles to study"}
           </h2>
+          <p className="mt-3 max-w-2xl leading-7 text-neutral-600">
+            {locale === "es"
+              ? "Cada principio tiene su propia explicación y se irá conectando con ejercicios visuales del Dojo."
+              : "Each principle has its own explanation and will progressively connect to visual Dojo exercises."}
+          </p>
           <div className="mt-7 grid gap-4 md:grid-cols-2">
-            {gestaltItems[locale].map(([name, description], index) => (
-              <div key={name} className="rounded-2xl border border-neutral-300 bg-white p-5">
+            {items.map(({ page, href, number }) => (
+              <Link
+                key={page.key}
+                href={href}
+                className="group rounded-2xl border border-neutral-300 bg-white p-5 transition hover:-translate-y-0.5 hover:border-neutral-500"
+              >
                 <div className="flex items-center justify-between gap-4">
-                  <h3 className="text-lg font-semibold">{name}</h3>
-                  <span className="text-sm font-bold dojo-accent-text">0{index + 1}</span>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">{page.eyebrow[locale]}</p>
+                  <span className="text-sm font-bold dojo-accent-text">{number}</span>
                 </div>
-                <p className="mt-2 leading-7 text-neutral-600">{description}</p>
-              </div>
+                <h3 className="mt-3 text-lg font-semibold">{page.title[locale]}</h3>
+                <p className="mt-2 leading-7 text-neutral-600">{page.short[locale]}</p>
+                <p className="mt-4 text-sm font-semibold">
+                  {locale === "es" ? "Aprender principio →" : "Learn principle →"}
+                </p>
+              </Link>
             ))}
           </div>
         </section>
