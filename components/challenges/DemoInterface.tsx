@@ -39,9 +39,7 @@ export function DemoInterface({ variant, locale = "en" }: DemoInterfaceProps) {
     const structured = variant === "pricing-structured";
     return (
       <div className={`${box} min-h-64 p-6`}>
-        <p className={structured ? "text-sm font-medium text-neutral-500" : "text-base font-medium"}>
-          Pro
-        </p>
+        <p className={structured ? "text-sm font-medium text-neutral-500" : "text-base font-medium"}>Pro</p>
         <div className={structured ? "mt-2 text-4xl font-semibold tracking-tight" : "mt-4 text-2xl font-medium"}>
           $12 <span className="text-sm font-normal text-neutral-500">/mo</span>
         </div>
@@ -107,9 +105,7 @@ export function DemoInterface({ variant, locale = "en" }: DemoInterfaceProps) {
     const hierarchy = variant === "type-hierarchy";
     return (
       <div className={`${box} min-h-64 p-6`}>
-        <p className={hierarchy ? "text-xs font-semibold uppercase tracking-wider text-neutral-400" : "text-base font-medium"}>
-          Design systems
-        </p>
+        <p className={hierarchy ? "text-xs font-semibold uppercase tracking-wider text-neutral-400" : "text-base font-medium"}>Design systems</p>
         <h3 className={hierarchy ? "mt-3 text-2xl font-semibold leading-tight" : "mt-3 text-lg font-medium"}>
           {locale === "es" ? "Cómo diseñar interfaces consistentes" : "How to design consistent interfaces"}
         </h3>
@@ -118,9 +114,7 @@ export function DemoInterface({ variant, locale = "en" }: DemoInterfaceProps) {
             ? "Una guía breve para convertir decisiones repetidas en un sistema coherente."
             : "A short guide to turning repeated decisions into a coherent system."}
         </p>
-        <p className={hierarchy ? "mt-5 text-xs text-neutral-400" : "mt-4 text-base"}>
-          6 min read
-        </p>
+        <p className={hierarchy ? "mt-5 text-xs text-neutral-400" : "mt-4 text-base"}>6 min read</p>
       </div>
     );
   }
@@ -131,11 +125,7 @@ export function DemoInterface({ variant, locale = "en" }: DemoInterfaceProps) {
       <div className={`${box} min-h-64 p-6`}>
         <p className="text-sm font-medium">{locale === "es" ? "Rendimiento semanal" : "Weekly performance"}</p>
         <div className="mt-6 grid grid-cols-3 gap-3">
-          {[
-            ["Revenue", "$24.8k"],
-            ["Orders", "1,284"],
-            ["Conv.", "4.8%"],
-          ].map(([label, value], i) => (
+          {[["Revenue", "$24.8k"], ["Orders", "1,284"], ["Conv.", "4.8%"]].map(([label, value], i) => (
             <div key={label} className="rounded-xl bg-neutral-50 p-3">
               <p className="text-xs text-neutral-500">{label}</p>
               <p className={metric && i === 0 ? "mt-1 text-2xl font-semibold" : "mt-1 text-lg font-medium"}>{value}</p>
@@ -152,19 +142,11 @@ export function DemoInterface({ variant, locale = "en" }: DemoInterfaceProps) {
     return (
       <div className={`${box} min-h-64 p-6`}>
         <p className="font-semibold">{locale === "es" ? "Iniciar sesión" : "Sign in"}</p>
-        {!inline && (
-          <div className="mt-4 rounded-lg bg-neutral-100 p-3 text-xs text-neutral-500">
-            {locale === "es" ? "Algo salió mal." : "Something went wrong."}
-          </div>
-        )}
+        {!inline && <div className="mt-4 rounded-lg bg-neutral-100 p-3 text-xs text-neutral-500">{locale === "es" ? "Algo salió mal." : "Something went wrong."}</div>}
         <label className="mt-5 block text-xs text-neutral-500">
           Email
           <div className={`mt-1 h-10 rounded-lg border bg-neutral-50 ${inline ? "border-neutral-950" : "border-neutral-300"}`} />
-          {inline && (
-            <span className="mt-1 block text-xs text-neutral-700">
-              {locale === "es" ? "Escribe un email válido, por ejemplo nombre@dominio.com" : "Enter a valid email, e.g. name@domain.com"}
-            </span>
-          )}
+          {inline && <span className="mt-1 block text-xs text-neutral-700">{locale === "es" ? "Escribe un email válido, por ejemplo nombre@dominio.com" : "Enter a valid email, e.g. name@domain.com"}</span>}
         </label>
       </div>
     );
@@ -176,7 +158,7 @@ export function DemoInterface({ variant, locale = "en" }: DemoInterfaceProps) {
       <div className={`${box} min-h-64 p-6`}>
         <p className="font-semibold">Checkout</p>
         <div className="mt-4 rounded-xl bg-neutral-50 p-4">
-          <p className="text-sm font-medium">{locale === "es" ? "Total" : "Total"}</p>
+          <p className="text-sm font-medium">Total</p>
           <p className="mt-1 text-xl font-semibold">$48.00</p>
         </div>
         {guest ? (
@@ -191,6 +173,39 @@ export function DemoInterface({ variant, locale = "en" }: DemoInterfaceProps) {
             <p className="text-xs font-medium text-neutral-500">{locale === "es" ? "Crea una cuenta para continuar" : "Create an account to continue"}</p>
             <div className="h-9 rounded-lg border border-neutral-300 bg-neutral-50" />
             <div className="h-9 rounded-lg border border-neutral-300 bg-neutral-50" />
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  if (variant.startsWith("choice-")) {
+    const focused = variant === "choice-focused";
+    const primary = locale === "es" ? ["Continuar aprendiendo", "Practicar UX", "Explorar principios"] : ["Continue learning", "Practice UX", "Explore principles"];
+    const secondary = locale === "es" ? ["Proyectos", "Guardados", "Comunidad", "Recursos", "Ajustes", "Ayuda"] : ["Projects", "Saved", "Community", "Resources", "Settings", "Help"];
+    return (
+      <div className={`${box} min-h-64 p-6`}>
+        <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+          {locale === "es" ? "¿Qué quieres hacer?" : "What do you want to do?"}
+        </p>
+        {focused ? (
+          <>
+            <div className="mt-5 grid gap-2">
+              {primary.map((item, index) => (
+                <div key={item} className={`rounded-xl px-4 py-3 text-sm font-semibold ${index === 0 ? "bg-neutral-950 text-white" : "border border-neutral-200"}`}>
+                  {item}
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-neutral-500">
+              {secondary.slice(0, 3).map((item) => <span key={item}>{item}</span>)}
+            </div>
+          </>
+        ) : (
+          <div className="mt-5 grid grid-cols-2 gap-2">
+            {[...primary, ...secondary].map((item) => (
+              <div key={item} className="rounded-xl border border-neutral-200 px-3 py-3 text-sm font-medium">{item}</div>
+            ))}
           </div>
         )}
       </div>
@@ -220,12 +235,7 @@ export function DemoInterface({ variant, locale = "en" }: DemoInterfaceProps) {
         <div className="h-28 rounded-2xl bg-neutral-200" />
         <div className={`mt-4 flex items-center justify-between ${comfortable ? "gap-3" : "gap-1"}`}>
           {["♡", "↗", "⋯"].map((icon) => (
-            <span
-              key={icon}
-              className={`flex items-center justify-center rounded-full border border-neutral-300 bg-white ${
-                comfortable ? "h-11 w-11 text-base" : "h-6 w-6 text-[10px]"
-              }`}
-            >
+            <span key={icon} className={`flex items-center justify-center rounded-full border border-neutral-300 bg-white ${comfortable ? "h-11 w-11 text-base" : "h-6 w-6 text-[10px]"}`}>
               {icon}
             </span>
           ))}
