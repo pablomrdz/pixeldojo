@@ -2,7 +2,7 @@ export type Locale = "en" | "es";
 export type LocalizedText = Record<Locale, string>;
 export type BattleAnswer = "a" | "b";
 export type Difficulty = "beginner" | "intermediate" | "advanced";
-export type BattleMode = "compare" | "spot";
+export type BattleMode = "compare" | "spot" | "rank";
 
 export type SpotScene =
   | "form-error"
@@ -11,6 +11,13 @@ export type SpotScene =
   | "hierarchy-banner"
   | "proximity-form"
   | "contrast-status";
+
+export type RankKind =
+  | "cta-hierarchy"
+  | "spacing"
+  | "error-recovery"
+  | "touch-target"
+  | "checkout-friction";
 
 export type Battle = {
   id: string;
@@ -39,6 +46,16 @@ export type Battle = {
       label: LocalizedText;
       isProblem: boolean;
     }>;
+  };
+  rank?: {
+    kind: RankKind;
+    prompt: LocalizedText;
+    items: Array<{
+      id: string;
+      label: LocalizedText;
+      quality: 1 | 2 | 3;
+    }>;
+    correctOrder: string[];
   };
   reasonPrompt?: LocalizedText;
   reasonOptions?: Array<{
