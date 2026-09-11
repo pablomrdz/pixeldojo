@@ -39,6 +39,9 @@ export function SiteFooter({ locale }: { locale: Locale }) {
             <Link href={`/${locale}/ux`} className="hover:text-neutral-950">
               {locale === "es" ? "Principios UX/UI" : "UX/UI principles"}
             </Link>
+            <Link href={`/${locale}/tools/color-contrast-checker`} className="hover:text-neutral-950">
+              {locale === "es" ? "Herramientas" : "Tools"}
+            </Link>
             <Link href={`/${locale}/about`} className="hover:text-neutral-950">
               {locale === "es" ? "Acerca de" : "About"}
             </Link>
@@ -49,9 +52,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
         </div>
 
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-neutral-700">
-            Legal
-          </p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-neutral-700">Legal</p>
           <div className="mt-3 flex flex-col gap-2">
             <Link href={`/${locale}/privacy`} className="hover:text-neutral-950">
               {locale === "es" ? "Privacidad" : "Privacy"}
