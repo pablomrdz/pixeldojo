@@ -58,10 +58,7 @@ export const principles: PrinciplePage[] = [
       en: "Understand why elements placed close together are perceived as related and how to use proximity in interfaces.",
       es: "Entiende por qué los elementos cercanos se perciben como relacionados y cómo usar la proximidad en interfaces.",
     },
-    short: {
-      en: "Proximity turns spacing into meaning.",
-      es: "La proximidad convierte el espacio en significado.",
-    },
+    short: { en: "Proximity turns spacing into meaning.", es: "La proximidad convierte el espacio en significado." },
     why: {
       en: "Users constantly infer relationships from distance. Good grouping reduces the amount of interpretation required.",
       es: "Los usuarios infieren relaciones constantemente a partir de la distancia. Una buena agrupación reduce el esfuerzo de interpretación.",
@@ -136,10 +133,7 @@ export const principles: PrinciplePage[] = [
       en: "Learn to remove unnecessary steps, prerequisites and decisions from user flows without removing useful context.",
       es: "Aprende a eliminar pasos, requisitos y decisiones innecesarias de un flujo sin quitar contexto útil.",
     },
-    short: {
-      en: "Friction is any unnecessary effort between a user and their goal.",
-      es: "La fricción es cualquier esfuerzo innecesario entre el usuario y su objetivo.",
-    },
+    short: { en: "Friction is any unnecessary effort between a user and their goal.", es: "La fricción es cualquier esfuerzo innecesario entre el usuario y su objetivo." },
     why: {
       en: "Every additional requirement creates another opportunity for hesitation, error or abandonment.",
       es: "Cada requisito adicional crea otra oportunidad de duda, error o abandono.",
@@ -162,10 +156,7 @@ export const principles: PrinciplePage[] = [
       en: "Learn why visual contrast affects readability and how stronger foreground-background separation improves interfaces.",
       es: "Aprende por qué el contraste afecta la legibilidad y cómo una separación más fuerte entre texto y fondo mejora las interfaces.",
     },
-    short: {
-      en: "Contrast helps users distinguish information from its background.",
-      es: "El contraste ayuda al usuario a distinguir la información de su fondo.",
-    },
+    short: { en: "Contrast helps users distinguish information from its background.", es: "El contraste ayuda al usuario a distinguir la información de su fondo." },
     why: {
       en: "Low contrast can make essential text difficult or impossible to perceive, especially for users with low vision.",
       es: "El bajo contraste puede dificultar o impedir percibir texto esencial, especialmente para usuarios con baja visión.",
@@ -188,10 +179,7 @@ export const principles: PrinciplePage[] = [
       en: "Learn how target size and distance affect how quickly and reliably users can interact with controls.",
       es: "Aprende cómo el tamaño y la distancia de un objetivo afectan la rapidez y precisión con la que el usuario interactúa.",
     },
-    short: {
-      en: "Larger, easier-to-reach targets require less precision.",
-      es: "Los objetivos más grandes y fáciles de alcanzar requieren menos precisión.",
-    },
+    short: { en: "Larger, easier-to-reach targets require less precision.", es: "Los objetivos más grandes y fáciles de alcanzar requieren menos precisión." },
     why: {
       en: "Tiny or distant controls increase interaction time and make accidental misses more likely.",
       es: "Los controles pequeños o difíciles de alcanzar aumentan el tiempo de interacción y la probabilidad de fallos.",
@@ -214,10 +202,7 @@ export const principles: PrinciplePage[] = [
       en: "Understand how the number and complexity of choices can increase decision time and cognitive effort.",
       es: "Entiende cómo la cantidad y complejidad de opciones puede aumentar el tiempo de decisión y el esfuerzo cognitivo.",
     },
-    short: {
-      en: "More meaningful choices usually require more decision time.",
-      es: "Más opciones significativas suelen requerir más tiempo de decisión.",
-    },
+    short: { en: "More meaningful choices usually require more decision time.", es: "Más opciones significativas suelen requerir más tiempo de decisión." },
     why: {
       en: "Interfaces become harder to navigate when many competing choices are presented with equal priority.",
       es: "Las interfaces se vuelven más difíciles de navegar cuando muchas opciones compiten con la misma prioridad.",
@@ -243,7 +228,7 @@ export const battlePrinciple: Record<string, PrincipleKey> = {
   "forms-errors-007": "error-recovery",
   "checkout-friction-008": "friction-reduction",
   "accessibility-contrast-009": "contrast-accessibility",
-  "accessibility-touch-010": "fitts-law",
+  "decision-hick-010": "hicks-law",
 };
 
 export function getPrinciple(key: PrincipleKey) {
