@@ -4,6 +4,14 @@ export type BattleAnswer = "a" | "b";
 export type Difficulty = "beginner" | "intermediate" | "advanced";
 export type BattleMode = "compare" | "spot";
 
+export type SpotScene =
+  | "form-error"
+  | "checkout-total"
+  | "touch-target"
+  | "hierarchy-banner"
+  | "proximity-form"
+  | "contrast-status";
+
 export type Battle = {
   id: string;
   slug: string;
@@ -24,6 +32,7 @@ export type Battle = {
   principle: LocalizedText;
   explanation: LocalizedText;
   spot?: {
+    scene?: SpotScene;
     prompt: LocalizedText;
     hotspots: Array<{
       id: string;
