@@ -9,9 +9,20 @@ type Hotspot = {
   isProblem: boolean;
 };
 
+function inferScene(scene: SpotScene | undefined, hotspots: Hotspot[]): SpotScene {
+  if (scene) return scene;
+  const ids = new Set(hotspots.map((item) => item.id));
+  if (ids.has("shipping-fee")) return "checkout-total";
+  if (ids.has("close-button")) return "touch-target";
+  if (ids.has("promo-cta")) return "hierarchy-banner";
+  if (ids.has("email-label")) return "proximity-form";
+  if (ids.has("status-text")) return "contrast-status";
+  return "form-error";
+}
+
 export function SpotProblemBattle({
   locale,
-  scene = "form-error",
+  scene,
   prompt,
   hotspots,
   resolved,
@@ -25,6 +36,7 @@ export function SpotProblemBattle({
   onResolve: (correct: boolean, hotspotId: string) => void;
 }) {
   const reduceMotion = useReducedMotion();
+  const activeScene = inferScene(scene, hotspots);
   const hotspot = (id: string) => hotspots.find((item) => item.id === id);
   const choose = (id: string) => {
     const item = hotspot(id);
@@ -38,7 +50,7 @@ export function SpotProblemBattle({
     <div className="rounded-3xl border border-neutral-300 bg-white p-4 md:p-6">
       <p className="mb-4 text-sm font-medium text-neutral-600">{prompt[locale]}</p>
       <div className="relative mx-auto max-w-2xl rounded-[28px] border border-neutral-300 bg-neutral-50 p-5 md:p-7">
-        {scene === "form-error" && (
+        {activeScene === "form-error" && (
           <div className="mx-auto max-w-lg rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
@@ -71,7 +83,7 @@ export function SpotProblemBattle({
           </div>
         )}
 
-        {scene === "checkout-total" && (
+        {activeScene === "checkout-total" && (
           <div className="mx-auto max-w-md rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
             <p className="text-sm font-semibold">{locale === "es" ? "Resumen del pedido" : "Order summary"}</p>
             <div className="mt-5 flex justify-between text-sm"><span>Studio Pack</span><span>$48.00</span></div>
@@ -90,7 +102,7 @@ export function SpotProblemBattle({
           </div>
         )}
 
-        {scene === "touch-target" && (
+        {activeScene === "touch-target" && (
           <div className="mx-auto w-64 rounded-[30px] border border-neutral-300 bg-white p-4 shadow-sm">
             <div className="relative h-40 rounded-2xl bg-neutral-200">
               <motion.button type="button" onClick={() => choose("close-button")} whileTap={tap}
@@ -107,7 +119,7 @@ export function SpotProblemBattle({
           </div>
         )}
 
-        {scene === "hierarchy-banner" && (
+        {activeScene === "hierarchy-banner" && (
           <div className="mx-auto max-w-lg rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
             <motion.button type="button" onClick={() => choose("promo-cta")} whileTap={tap}
               className={`w-full rounded-xl border border-neutral-950 bg-neutral-950 px-4 py-4 text-left text-lg font-bold text-white ${stateClass("promo-cta")}`}>
@@ -125,7 +137,7 @@ export function SpotProblemBattle({
           </div>
         )}
 
-        {scene === "proximity-form" && (
+        {activeScene === "proximity-form" && (
           <div className="mx-auto max-w-md rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
             <p className="font-semibold">{locale === "es" ? "Perfil" : "Profile"}</p>
             <div className="mt-5 rounded-xl border border-neutral-200 p-4">
@@ -143,7 +155,7 @@ export function SpotProblemBattle({
           </div>
         )}
 
-        {scene === "contrast-status" && (
+        {activeScene === "contrast-status" && (
           <div className="mx-auto max-w-md rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
             <motion.button type="button" onClick={() => choose("order-number")} whileTap={tap}
               className={`w-full rounded-lg text-left ${stateClass("order-number")}`}>
