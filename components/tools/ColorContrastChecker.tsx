@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { track } from "@/lib/analytics";
 import type { Locale } from "@/lib/types";
 
 function normalizeHex(value: string) {
@@ -45,11 +46,30 @@ export function ColorContrastChecker({ locale }: { locale: Locale }) {
   const contrast = useMemo(() => ratio(foreground, background), [foreground, background]);
   const formatted = contrast.toFixed(2);
 
+  useEffect(() => {
+    track("tool_opened", { tool: "color_contrast_checker", locale });
+  }, [locale]);
+
   const statuses = [
     { label: locale === "es" ? "AA texto normal" : "AA normal text", pass: contrast >= 4.5 },
     { label: locale === "es" ? "AA texto grande" : "AA large text", pass: contrast >= 3 },
     { label: locale === "es" ? "AAA texto normal" : "AAA normal text", pass: contrast >= 7 },
   ];
+
+  const emitContrastEvent = (source: string, fg: string, bg: string) => {
+    const value = ratio(fg, bg);
+    track("contrast_checked", {
+      tool: "color_contrast_checker",
+      locale,
+      source,
+      foreground: fg,
+      background: bg,
+      ratio: Number(value.toFixed(2)),
+      aa_normal: value >= 4.5,
+      aa_large: value >= 3,
+      aaa_normal: value >= 7,
+    });
+  };
 
   const commit = (kind: "fg" | "bg", value: string) => {
     const normalized = normalizeHex(value);
@@ -57,17 +77,22 @@ export function ColorContrastChecker({ locale }: { locale: Locale }) {
     if (kind === "fg") {
       setForeground(normalized);
       setForegroundDraft(normalized);
+      emitContrastEvent("foreground", normalized, background);
     } else {
       setBackground(normalized);
       setBackgroundDraft(normalized);
+      emitContrastEvent("background", foreground, normalized);
     }
   };
 
   const swap = () => {
-    setForeground(background);
-    setBackground(foreground);
-    setForegroundDraft(background);
-    setBackgroundDraft(foreground);
+    const nextForeground = background;
+    const nextBackground = foreground;
+    setForeground(nextForeground);
+    setBackground(nextBackground);
+    setForegroundDraft(nextForeground);
+    setBackgroundDraft(nextBackground);
+    emitContrastEvent("swap", nextForeground, nextBackground);
   };
 
   return (

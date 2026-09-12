@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import { AnalyticsScripts } from "@/components/AnalyticsScripts";
 import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
 
@@ -18,7 +19,10 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <AnalyticsScripts />
+      </body>
     </html>
   );
 }

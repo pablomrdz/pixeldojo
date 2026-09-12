@@ -1,7 +1,8 @@
 "use client";
 
 import { Reorder, motion, useReducedMotion } from "motion/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { track } from "@/lib/analytics";
 import type { Locale, RankKind } from "@/lib/types";
 
 type RankItem = {
@@ -84,9 +85,19 @@ export function RankBattle({
   const [order, setOrder] = useState(initialOrder);
   const itemById = (id: string) => items.find((item) => item.id === id)!;
 
+  useEffect(() => {
+    track("rank_started", { locale, kind, item_count: items.length });
+  }, [locale, kind, items.length]);
+
   const submit = () => {
     if (resolved) return;
     const correct = order.every((id, index) => id === correctOrder[index]);
+    track("rank_submitted", {
+      locale,
+      kind,
+      correct,
+      order: order.join(">"),
+    });
     onResolve(correct, order);
   };
 

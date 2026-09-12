@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import { track } from "@/lib/analytics";
 import type { Locale, SpotScene } from "@/lib/types";
 
 type Hotspot = {
@@ -40,7 +41,15 @@ export function SpotProblemBattle({
   const hotspot = (id: string) => hotspots.find((item) => item.id === id);
   const choose = (id: string) => {
     const item = hotspot(id);
-    if (!resolved && item) onResolve(item.isProblem, id);
+    if (!resolved && item) {
+      track("spot_problem_answered", {
+        locale,
+        scene: activeScene,
+        hotspot_id: id,
+        correct: item.isProblem,
+      });
+      onResolve(item.isProblem, id);
+    }
   };
   const stateClass = (id: string) =>
     resolved && hotspot(id)?.isProblem ? "accent-ring border-[var(--accent)]" : "";

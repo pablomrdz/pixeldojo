@@ -6,11 +6,17 @@ export type PixelDojoEvent =
   | "training_started"
   | "battle_viewed"
   | "battle_answered"
+  | "spot_problem_answered"
+  | "rank_started"
+  | "rank_submitted"
   | "reason_opened"
   | "reason_answered"
   | "training_completed"
   | "train_again_clicked"
-  | "language_changed";
+  | "language_changed"
+  | "support_clicked"
+  | "tool_opened"
+  | "contrast_checked";
 
 export type AnalyticsPayload = Record<string, string | number | boolean | null | undefined>;
 
