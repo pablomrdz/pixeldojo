@@ -4,11 +4,9 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname === "/") {
-    const acceptLanguage = request.headers.get("accept-language")?.toLowerCase() ?? "";
-    const locale = acceptLanguage.includes("es") ? "es" : "en";
     const url = request.nextUrl.clone();
-    url.pathname = `/${locale}`;
-    return NextResponse.redirect(url);
+    url.pathname = "/en";
+    return NextResponse.redirect(url, 308);
   }
 
   const locale = pathname.startsWith("/es") ? "es" : "en";
