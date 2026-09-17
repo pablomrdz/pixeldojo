@@ -237,8 +237,7 @@ export const volumeBattles: Battle[] = [
     correctAnswer: "b",
     principle: { en: "Hick's Law", es: "Ley de Hick" },
     explanation: { en: "Grouping secondary destinations reduces competing choices and lowers decision effort.", es: "Agrupar destinos secundarios reduce opciones competidoras y disminuye el esfuerzo de decisión." },
-  },,
-
+  },
   {
     id: "compare-command-menu-031",
     slug: "command-menu-choice-overload",
