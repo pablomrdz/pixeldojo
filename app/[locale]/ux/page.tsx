@@ -25,7 +25,7 @@ export async function generateMetadata({
         : "Learn UX and UI principles through short explanations, visual examples, tools and interactive practice.",
     alternates: {
       canonical: `/${locale}/ux`,
-      languages: { en: "/en/ux", es: "/es/ux" },
+      languages: { en: "/en/ux", es: "/es/ux", "x-default": "/en/ux" },
     },
   };
 }
