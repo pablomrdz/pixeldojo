@@ -11,7 +11,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     title: locale === "es" ? "Contacto — PixelDojo" : "Contact — PixelDojo",
     description:
       locale === "es" ? "Contacta a PixelDojo para feedback, colaboraciones o preguntas." : "Contact PixelDojo for feedback, collaborations, or questions.",
-    alternates: { languages: { en: "/en/contact", es: "/es/contact" } },
+    alternates: {
+      canonical: `/${locale}/contact`,
+      languages: { en: "/en/contact", es: "/es/contact", "x-default": "/en/contact" },
+    },
   };
 }
 
