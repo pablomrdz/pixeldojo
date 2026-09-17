@@ -13,7 +13,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       locale === "es"
         ? "Ayuda a mantener PixelDojo rápido, independiente y accesible."
         : "Help keep PixelDojo fast, independent, and accessible.",
-    alternates: { languages: { en: "/en/support", es: "/es/support" } },
+    alternates: {
+      canonical: `/${locale}/support`,
+      languages: { en: "/en/support", es: "/es/support", "x-default": "/en/support" },
+    },
   };
 }
 
