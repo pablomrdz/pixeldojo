@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
         : "Learn Gestalt principles applied to UX and UI: proximity, similarity, common region and closure with visual examples.",
     alternates: {
       canonical: `/${locale}/ux/gestalt`,
-      languages: { en: "/en/ux/gestalt", es: "/es/ux/gestalt" },
+      languages: { en: "/en/ux/gestalt", es: "/es/ux/gestalt", "x-default": "/en/ux/gestalt" },
     },
   };
 }
