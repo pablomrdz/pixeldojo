@@ -8,7 +8,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const locale: Locale = rawLocale === "es" ? "es" : "en";
   return {
     title: locale === "es" ? "Política de privacidad — PixelDojo" : "Privacy Policy — PixelDojo",
-    alternates: { languages: { en: "/en/privacy", es: "/es/privacy" } },
+    alternates: {
+      canonical: `/${locale}/privacy`,
+      languages: { en: "/en/privacy", es: "/es/privacy", "x-default": "/en/privacy" },
+    },
   };
 }
 
