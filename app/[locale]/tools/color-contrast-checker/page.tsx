@@ -28,6 +28,7 @@ export async function generateMetadata({
       languages: {
         en: "/en/tools/color-contrast-checker",
         es: "/es/tools/color-contrast-checker",
+        "x-default": "/en/tools/color-contrast-checker",
       },
     },
   };
