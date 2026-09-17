@@ -12,7 +12,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       locale === "es"
         ? "Conoce la idea detrás de PixelDojo y por qué entrenamos criterio de diseño mediante práctica visual."
         : "Learn the idea behind PixelDojo and why we train design judgment through visual practice.",
-    alternates: { languages: { en: "/en/about", es: "/es/about" } },
+    alternates: {
+      canonical: `/${locale}/about`,
+      languages: { en: "/en/about", es: "/es/about", "x-default": "/en/about" },
+    },
   };
 }
 
