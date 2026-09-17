@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
         : "Learn the most useful UX laws with visual examples: Fitts, Hick, Miller and Jakob.",
     alternates: {
       canonical: `/${locale}/ux/laws`,
-      languages: { en: "/en/ux/laws", es: "/es/ux/laws" },
+      languages: { en: "/en/ux/laws", es: "/es/ux/laws", "x-default": "/en/ux/laws" },
     },
   };
 }
